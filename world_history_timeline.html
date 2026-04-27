@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세계사 연대기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A84C;--gold-light:#F0D080;--gold-dark:#8B6914;
+  --deep:#0D0D1A;--surface:#12122A;--panel:#1A1A35;--card:#20203D;
+  --border:#2A2A50;--text:#E8E0CC;--muted:#8A8FAA;
+  --accent:#4A7CFF;--accent2:#FF6B6B;--success:#4CAF8A;
+}
+body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;overflow-x:hidden}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%, #1a0a2e 0%, transparent 50%),radial-gradient(ellipse at 80% 80%, #0a1a2e 0%, transparent 50%),var(--deep)}
+
+/* Header */
+.header{position:relative;z-index:10;background:linear-gradient(180deg,rgba(10,5,20,0.98) 0%,rgba(13,13,26,0.95) 100%);border-bottom:1px solid var(--gold-dark);padding:0 2rem}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--gold-light);letter-spacing:0.05em}
+.logo-sub{font-size:11px;color:var(--muted);letter-spacing:0.15em}
+.header-actions{display:flex;gap:8px}
+.btn{padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn-primary{background:var(--gold);border-color:var(--gold);color:#000;font-weight:500}
+.btn-primary:hover{background:var(--gold-light);color:#000}
+
+/* Filter bar */
+.filterbar{position:relative;z-index:10;background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:12px 2rem}
+.filterbar-inner{max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.filter-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px}
+.chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
+.chip:hover,.chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.chip.active{font-weight:500}
+.search-wrap{margin-left:auto;position:relative}
+.search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:200px;outline:none}
+.search-input:focus{border-color:var(--gold)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.view-toggles{display:flex;gap:4px;margin-left:8px}
+.view-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.view-btn.active,.view-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Main layout */
+.main{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:2rem}
+
+/* Stats bar */
+.stats{display:flex;gap:16px;margin-bottom:24px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 20px;flex:1;text-align:center}
+.stat-num{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:600;color:var(--gold)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:0.05em}
+
+/* Timeline view */
+.timeline-wrap{position:relative}
+.timeline-axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--border) 5%,var(--border) 95%,transparent);transform:translateX(-50%)}
+.timeline-item{display:flex;gap:40px;margin-bottom:32px;position:relative;align-items:flex-start}
+.timeline-item.right{flex-direction:row-reverse}
+.timeline-side{flex:1}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--deep);flex-shrink:0;margin-top:20px;position:relative;z-index:2;cursor:pointer;transition:transform 0.2s}
+.timeline-dot:hover{transform:scale(1.4)}
+.event-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.event-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:0}
+.event-card:hover{border-color:var(--gold-dark);transform:translateY(-2px)}
+.event-card:hover::before{opacity:1}
+.event-year{font-family:'Noto Serif KR',serif;font-size:11px;color:var(--gold);font-weight:600;letter-spacing:0.15em;margin-bottom:6px;text-transform:uppercase}
+.event-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4}
+.event-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.event-region{background:rgba(74,124,255,0.15);color:#7BA3FF;border-radius:4px;padding:2px 8px;font-size:11px}
+.event-importance{display:flex;gap:2px}
+.star{color:var(--gold);font-size:10px}
+.star.empty{color:var(--border)}
+.event-desc{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Card grid view */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.grid-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.grid-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity 0.2s}
+.grid-card:hover{border-color:var(--gold-dark);transform:translateY(-3px)}
+.grid-card:hover::after{opacity:1}
+.grid-card-year{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:700;color:var(--gold);line-height:1}
+.grid-card-bc{font-size:13px;color:var(--gold-dark);margin-left:4px}
+.grid-card-title{font-size:14px;font-weight:500;margin:10px 0 8px;line-height:1.4}
+.grid-card-desc{font-size:12px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Era divider */
+.era-divider{display:flex;align-items:center;gap:16px;margin:32px 0 24px;position:relative;z-index:5}
+.era-line{flex:1;height:1px;background:var(--border)}
+.era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;position:relative}
+.modal-header{padding:24px 24px 0;border-bottom:1px solid var(--border);margin-bottom:24px;padding-bottom:16px}
+.modal-year{font-family:'Noto Serif KR',serif;font-size:36px;font-weight:700;color:var(--gold)}
+.modal-title{font-size:20px;font-weight:500;margin-top:8px}
+.modal-body{padding:0 24px 24px}
+.modal-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.detail-item{background:var(--card);border-radius:8px;padding:12px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.detail-value{font-size:14px;font-weight:500}
+.modal-desc{font-size:14px;color:var(--muted);line-height:1.8}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:1px solid var(--border);border-radius:50%;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-close:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Form */
+.form-section{margin-bottom:16px}
+.form-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block;letter-spacing:0.05em}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color 0.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.importance-select{display:flex;gap:8px}
+.importance-btn{flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;text-align:center}
+.importance-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
+.era-select-group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.era-btn{padding:8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;text-align:center}
+.era-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* Empty state */
+.empty{text-align:center;padding:60px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
+.empty-text{font-size:14px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🌍</div>
+      <div>
+        <div class="logo-text">세계사 연대기</div>
+        <div class="logo-sub">WORLD HISTORY CHRONICLE</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="openAddModal()">+ 사건 추가</button>
+    </div>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="filterbar-inner">
+    <span class="filter-label">지역</span>
+    <button class="chip active" data-region="전체" onclick="setRegion('전체',this)">전체</button>
+    <button class="chip" data-region="아시아" onclick="setRegion('아시아',this)">아시아</button>
+    <button class="chip" data-region="유럽" onclick="setRegion('유럽',this)">유럽</button>
+    <button class="chip" data-region="아프리카" onclick="setRegion('아프리카',this)">아프리카</button>
+    <button class="chip" data-region="아메리카" onclick="setRegion('아메리카',this)">아메리카</button>
+    <button class="chip" data-region="중동" onclick="setRegion('중동',this)">중동</button>
+    <button class="chip" data-region="전세계" onclick="setRegion('전세계',this)">전세계</button>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="사건 검색..." oninput="setSearch(this.value)" />
+    </div>
+    <div class="view-toggles">
+      <button class="view-btn active" id="btn-timeline" onclick="setView('timeline')" title="타임라인 뷰">≡</button>
+      <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="카드 그리드">⊞</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats" id="stats"></div>
+  <div id="content"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay hidden" id="detail-modal">
+  <div class="modal" id="detail-modal-inner">
+    <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+    <div class="modal-header">
+      <div class="modal-year" id="d-year"></div>
+      <div class="modal-title" id="d-title"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-detail">
+        <div class="detail-item"><div class="detail-label">지역</div><div class="detail-value" id="d-region"></div></div>
+        <div class="detail-item"><div class="detail-label">중요도</div><div class="detail-value" id="d-importance"></div></div>
+      </div>
+      <p class="modal-desc" id="d-desc"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay hidden" id="add-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+    <div class="modal-header">
+      <div class="modal-year" style="font-size:22px;" id="form-modal-title">새 역사적 사건 추가</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label">연도 숫자</label>
+          <input class="form-input" type="number" id="f-year" placeholder="예: 2023" />
+        </div>
+        <div class="form-section">
+          <label class="form-label">연대 구분</label>
+          <div class="era-select-group">
+            <button class="era-btn selected" id="era-ad" onclick="selectEra('AD')">기원후 (AD)</button>
+            <button class="era-btn" id="era-bc" onclick="selectEra('BC')">기원전 (BC)</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">사건명</label>
+        <input class="form-input" type="text" id="f-title" placeholder="역사적 사건의 이름을 입력하세요" />
+      </div>
+      <div class="form-section">
+        <label class="form-label">국가 / 지역</label>
+        <select class="form-select" id="f-region">
+          <option value="아시아">아시아</option>
+          <option value="유럽">유럽</option>
+          <option value="아프리카">아프리카</option>
+          <option value="아메리카">아메리카</option>
+          <option value="중동">중동</option>
+          <option value="전세계">전세계</option>
+        </select>
+      </div>
+      <div class="form-section">
+        <label class="form-label">상세 설명</label>
+        <textarea class="form-textarea" id="f-desc" placeholder="사건에 대한 상세한 설명을 입력하세요..."></textarea>
+      </div>
+      <div class="form-section">
+        <label class="form-label">중요도</label>
+        <div class="importance-select" id="importance-select">
+          <button class="importance-btn" onclick="selectImportance(1)">★ 1</button>
+          <button class="importance-btn" onclick="selectImportance(2)">★ 2</button>
+          <button class="importance-btn selected" onclick="selectImportance(3)">★ 3</button>
+          <button class="importance-btn" onclick="selectImportance(4)">★ 4</button>
+          <button class="importance-btn" onclick="selectImportance(5)">★ 5</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('add-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveEvent()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 상태 관리 변수
+let events = []; 
+let currentRegion = '전체';
+let currentSearch = '';
+let currentView = 'timeline';
+let selectedImportance = 3;
+let selectedEra = 'AD';
+let editingId = null;
+
+// [수정] 서버로부터 데이터 불러오기 함수
+async function fetchEvents() {
+    try {
+        const response = await fetch('/api/events');
+        if (!response.ok) throw new Error('데이터를 불러오는데 실패했습니다.');
+        events = await response.json();
+        render(); // 데이터를 가져온 후 화면 갱신
+    } catch (error) {
+        console.error('Fetch Error:', error);
+        // 서버가 없는 상태에서 접속 시 오류 메시지 출력
+        alert('서버 연결 오류: 백엔드 서버가 실행 중인지 확인하세요.');
+    }
+}
+
+function formatYear(y) {
+    if (y < 0) return `기원전 ${Math.abs(y)}년`;
+    if (y === 0) return '1년 (AD)';
+    return `${y}년`;
+}
+
+function renderStars(n) {
+    let s = '';
+    for (let i = 1; i <= 5; i++) s += `<span class="star ${i <= n ? '' : 'empty'}">★</span>`;
+    return s;
+}
+
+function getFiltered() {
+    return events.filter(e => {
+        const regionOk = currentRegion === '전체' || e.region === currentRegion;
+        // e.desc가 null일 경우를 대비해 방어 코드 추가
+        const description = e.desc || e.description || ""; 
+        const searchOk = !currentSearch || 
+                         e.title.includes(currentSearch) || 
+                         description.includes(currentSearch) || 
+                         e.region.includes(currentSearch);
+        return regionOk && searchOk;
+    }).sort((a, b) => a.year - b.year);
+}
+
+function getEras(filtered) {
+    const eras = [];
+    const groups = {};
+    filtered.forEach(e => {
+        let era;
+        if (e.year < -500) era = '고대 (기원전 500년 이전)';
+        else if (e.year < 500) era = '고전기 (기원전 500년 ~ 서기 500년)';
+        else if (e.year < 1450) era = '중세 (500년 ~ 1450년)';
+        else if (e.year < 1800) era = '근세 (1450년 ~ 1800년)';
+        else if (e.year < 1950) era = '근현대 (1800년 ~ 1950년)';
+        else era = '현대 (1950년 이후)';
+        if (!groups[era]) { groups[era] = []; eras.push(era); }
+        groups[era].push(e);
+    });
+    return {eras, groups};
+}
+
+function renderStats(filtered) {
+    const regions = [...new Set(filtered.map(e => e.region))].length;
+    const avgImportance = filtered.length ? (filtered.reduce((s, e) => s + e.importance, 0) / filtered.length).toFixed(1) : 0;
+    const statsEl = document.getElementById('stats');
+    if(statsEl) {
+        statsEl.innerHTML = `
+            <div class="stat-card"><div class="stat-num">${filtered.length}</div><div class="stat-lbl">총 사건 수</div></div>
+            <div class="stat-card"><div class="stat-num">${regions}</div><div class="stat-lbl">관련 지역</div></div>
+            <div class="stat-card"><div class="stat-num">${filtered.length ? formatYear(filtered[0].year) : '—'}</div><div class="stat-lbl">최초 연도</div></div>
+            <div class="stat-card"><div class="stat-num">${avgImportance}</div><div class="stat-lbl">평균 중요도</div></div>
+        `;
+    }
+}
+
+function renderTimeline(filtered) {
+    const {eras, groups} = getEras(filtered);
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">해당하는 역사적 사건이 없습니다.</div></div>`;
+    let html = '<div class="timeline-wrap"><div class="timeline-axis"></div>';
+    let idx = 0;
+    eras.forEach(era => {
+        html += `<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
+        groups[era].forEach(e => {
+            const side = idx % 2 === 0 ? '' : 'right';
+            html += `<div class="timeline-item ${side}">
+                <div class="timeline-side">${side ? '' : renderCard(e)}</div>
+                <div class="timeline-dot" onclick="showDetail(${e.id})"></div>
+                <div class="timeline-side">${side ? renderCard(e) : ''}</div>
+            </div>`;
+            idx++;
+        });
+    });
+    html += '</div>';
+    return html;
+}
+
+function renderCard(e) {
+    const description = e.desc || e.description || "";
+    return `<div class="event-card" onclick="showDetail(${e.id})">
+        <div class="event-year">${formatYear(e.year)}</div>
+        <div class="event-title">${e.title}</div>
+        <div class="event-meta">
+            <span class="event-region">${e.region}</span>
+            <span class="event-importance">${renderStars(e.importance)}</span>
+        </div>
+        <div class="event-desc">${description}</div>
+    </div>`;
+}
+
+function renderGrid(filtered) {
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">해당하는 역사적 사건이 없습니다.</div></div>`;
+    const {eras, groups} = getEras(filtered);
+    let html = '';
+    eras.forEach(era => {
+        html += `<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
+        html += '<div class="card-grid">';
+        groups[era].forEach(e => {
+            const yr = e.year < 0 ? Math.abs(e.year) : e.year;
+            const bc = e.year < 0 ? '<span class="grid-card-bc">BC</span>' : '';
+            const description = e.desc || e.description || "";
+            html += `<div class="grid-card" onclick="showDetail(${e.id})">
+                <div class="grid-card-year">${yr}${bc}</div>
+                <div class="grid-card-title">${e.title}</div>
+                <div class="event-meta" style="margin-bottom:8px"><span class="event-region">${e.region}</span><span class="event-importance">${renderStars(e.importance)}</span></div>
+                <div class="grid-card-desc">${description}</div>
+            </div>`;
+        });
+        html += '</div>';
+    });
+    return html;
+}
+
+function render() {
+    const filtered = getFiltered();
+    renderStats(filtered);
+    const content = document.getElementById('content');
+    content.innerHTML = currentView === 'timeline' ? renderTimeline(filtered) : renderGrid(filtered);
+}
+
+// UI 이벤트 함수들
+function setRegion(r, btn) {
+    currentRegion = r;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+}
+function setSearch(v) { currentSearch = v; render(); }
+function setView(v) {
+    currentView = v;
+    document.getElementById('btn-timeline').classList.toggle('active', v === 'timeline');
+    document.getElementById('btn-grid').classList.toggle('active', v === 'grid');
+    render();
+}
+
+function showDetail(id) {
+    const e = events.find(x => x.id == id);
+    if (!e) return;
+    document.getElementById('d-year').textContent = formatYear(e.year);
+    document.getElementById('d-title').textContent = e.title;
+    document.getElementById('d-region').textContent = e.region;
+    document.getElementById('d-importance').innerHTML = renderStars(e.importance);
+    document.getElementById('d-desc').textContent = e.desc || e.description || "";
+    document.getElementById('detail-modal').classList.remove('hidden');
+}
+
+function openAddModal(id) {
+    editingId = id || null;
+    if (id) {
+        const e = events.find(x => x.id == id);
+        document.getElementById('form-modal-title').textContent = '사건 수정';
+        document.getElementById('f-year').value = Math.abs(e.year);
+        document.getElementById('f-title').value = e.title;
+        document.getElementById('f-region').value = e.region;
+        document.getElementById('f-desc').value = e.desc || e.description || "";
+        selectedImportance = e.importance;
+        selectedEra = e.year < 0 ? 'BC' : 'AD';
+    } else {
+        document.getElementById('form-modal-title').textContent = '새 역사적 사건 추가';
+        document.getElementById('f-year').value = '';
+        document.getElementById('f-title').value = '';
+        document.getElementById('f-region').value = '아시아';
+        document.getElementById('f-desc').value = '';
+        selectedImportance = 3;
+        selectedEra = 'AD';
+    }
+    updateImportanceUI();
+    updateEraUI();
+    document.getElementById('add-modal').classList.remove('hidden');
+}
+
+// [핵심 수정] 데이터 저장 로직
+async function saveEvent() {
+    const yrInput = document.getElementById('f-year').value;
+    const title = document.getElementById('f-title').value.trim();
+    const region = document.getElementById('f-region').value;
+    const desc = document.getElementById('f-desc').value.trim();
+
+    if (!yrInput || !title) { alert('연도와 사건명은 필수입니다.'); return; }
+    
+    const yearNum = parseInt(yrInput);
+    const year = selectedEra === 'BC' ? -Math.abs(yearNum) : Math.abs(yearNum);
+    
+    // 백엔드 DB 필드명에 맞춰 객체 생성 (desc 또는 description)
+    const eventData = { 
+        year, 
+        title, 
+        region, 
+        desc: desc, // 백엔드에서 description을 쓴다면 필드명을 변경하세요
+        importance: selectedImportance 
+    };
+
+    try {
+        let response;
+        const url = editingId ? `/api/events/${editingId}` : '/api/events';
+        const method = editingId ? 'PUT' : 'POST';
+
+        response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData)
+        });
+
+        if (response.ok) {
+            closeModal('add-modal');
+            await fetchEvents(); 
+        } else {
+            const errorData = await response.json();
+            alert('저장 실패: ' + (errorData.message || '서버 오류가 발생했습니다.'));
+        }
+    } catch (error) {
+        console.error('Save Error:', error);
+        alert('서버 전송 오류가 발생했습니다. 네트워크 상태나 서버 주소를 확인하세요.');
+    }
+}
+
+function selectImportance(n) { selectedImportance = n; updateImportanceUI(); }
+function updateImportanceUI() {
+    document.querySelectorAll('.importance-btn').forEach((b, i) => {
+        b.classList.toggle('selected', i + 1 === selectedImportance);
+    });
+}
+function selectEra(era) { selectedEra = era; updateEraUI(); }
+function updateEraUI() {
+    document.getElementById('era-ad').classList.toggle('selected', selectedEra === 'AD');
+    document.getElementById('era-bc').classList.toggle('selected', selectedEra === 'BC');
+}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal-overlay')) {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    }
+});
+
+// 초기 실행
+fetchEvents();
+</script>
+</body>
+</html>
