@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 세계사 연대기 (World History Timeline)
 
 ## Render 배포 방법
@@ -59,3 +60,7 @@ npm start
 - Backend: Node.js + Express
 - Database: PostgreSQL (Render Free Tier)
 - Hosting: Render
+=======
+# my-worldhistory-app
+세계사 사이트
+>>>>>>> origin/main

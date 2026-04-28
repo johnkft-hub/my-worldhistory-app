@@ -120,12 +120,6 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 
-<<<<<<< HEAD
-/* Modal footer */
-.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-
-=======
->>>>>>> origin/main
 /* Empty state */
 .empty{text-align:center;padding:60px;color:var(--muted)}
 .empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
@@ -199,14 +193,6 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       </div>
       <p class="modal-desc" id="d-desc"></p>
     </div>
-<<<<<<< HEAD
-    <!-- 🟡 수정 3: 삭제/수정 버튼 추가 -->
-    <div class="modal-footer">
-      <button class="btn" id="d-delete-btn" style="border-color:#FF6B6B;color:#FF6B6B;" onclick="deleteEvent()">🗑 삭제</button>
-      <button class="btn btn-primary" id="d-edit-btn" onclick="editFromDetail()">✏️ 수정</button>
-    </div>
-=======
->>>>>>> origin/main
   </div>
 </div>
 
@@ -277,15 +263,6 @@ let currentView = 'timeline';
 let selectedImportance = 3;
 let selectedEra = 'AD';
 let editingId = null;
-<<<<<<< HEAD
-let detailId = null; // 🟡 수정 3: 현재 상세보기 중인 id 추적
-
-// 🟢 수정 4: XSS 방지 이스케이프 함수
-function escHtml(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-=======
->>>>>>> origin/main
 
 // [수정] 서버로부터 데이터 불러오기 함수
 async function fetchEvents() {
@@ -379,21 +356,12 @@ function renderTimeline(filtered) {
 }
 
 function renderCard(e) {
-<<<<<<< HEAD
-    const description = escHtml(e.desc || e.description || "");
-    return `<div class="event-card" onclick="showDetail(${e.id})">
-        <div class="event-year">${formatYear(e.year)}</div>
-        <div class="event-title">${escHtml(e.title)}</div>
-        <div class="event-meta">
-            <span class="event-region">${escHtml(e.region)}</span>
-=======
     const description = e.desc || e.description || "";
     return `<div class="event-card" onclick="showDetail(${e.id})">
         <div class="event-year">${formatYear(e.year)}</div>
         <div class="event-title">${e.title}</div>
         <div class="event-meta">
             <span class="event-region">${e.region}</span>
->>>>>>> origin/main
             <span class="event-importance">${renderStars(e.importance)}</span>
         </div>
         <div class="event-desc">${description}</div>
@@ -410,19 +378,11 @@ function renderGrid(filtered) {
         groups[era].forEach(e => {
             const yr = e.year < 0 ? Math.abs(e.year) : e.year;
             const bc = e.year < 0 ? '<span class="grid-card-bc">BC</span>' : '';
-<<<<<<< HEAD
-            const description = escHtml(e.desc || e.description || "");
-            html += `<div class="grid-card" onclick="showDetail(${e.id})">
-                <div class="grid-card-year">${yr}${bc}</div>
-                <div class="grid-card-title">${escHtml(e.title)}</div>
-                <div class="event-meta" style="margin-bottom:8px"><span class="event-region">${escHtml(e.region)}</span><span class="event-importance">${renderStars(e.importance)}</span></div>
-=======
             const description = e.desc || e.description || "";
             html += `<div class="grid-card" onclick="showDetail(${e.id})">
                 <div class="grid-card-year">${yr}${bc}</div>
                 <div class="grid-card-title">${e.title}</div>
                 <div class="event-meta" style="margin-bottom:8px"><span class="event-region">${e.region}</span><span class="event-importance">${renderStars(e.importance)}</span></div>
->>>>>>> origin/main
                 <div class="grid-card-desc">${description}</div>
             </div>`;
         });
@@ -456,10 +416,6 @@ function setView(v) {
 function showDetail(id) {
     const e = events.find(x => x.id == id);
     if (!e) return;
-<<<<<<< HEAD
-    detailId = id; // 🟡 수정 3: 현재 id 저장
-=======
->>>>>>> origin/main
     document.getElementById('d-year').textContent = formatYear(e.year);
     document.getElementById('d-title').textContent = e.title;
     document.getElementById('d-region').textContent = e.region;
@@ -468,34 +424,6 @@ function showDetail(id) {
     document.getElementById('detail-modal').classList.remove('hidden');
 }
 
-<<<<<<< HEAD
-// 🟡 수정 3: 삭제 함수
-async function deleteEvent() {
-    if (!detailId) return;
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-    try {
-        const response = await fetch(`/api/events/${detailId}`, { method: 'DELETE' });
-        if (response.ok) {
-            closeModal('detail-modal');
-            await fetchEvents();
-        } else {
-            const errorData = await response.json();
-            alert('삭제 실패: ' + (errorData.error || '서버 오류가 발생했습니다.'));
-        }
-    } catch (error) {
-        console.error('Delete Error:', error);
-        alert('서버 전송 오류가 발생했습니다.');
-    }
-}
-
-// 🟡 수정 3: 상세보기에서 수정 모달 열기
-function editFromDetail() {
-    closeModal('detail-modal');
-    openAddModal(detailId);
-}
-
-=======
->>>>>>> origin/main
 function openAddModal(id) {
     editingId = id || null;
     if (id) {
@@ -558,12 +486,7 @@ async function saveEvent() {
             await fetchEvents(); 
         } else {
             const errorData = await response.json();
-<<<<<<< HEAD
-            // 🔴 수정 2: error 필드 우선, message 필드 fallback
-            alert('저장 실패: ' + (errorData.error || errorData.message || '서버 오류가 발생했습니다.'));
-=======
             alert('저장 실패: ' + (errorData.message || '서버 오류가 발생했습니다.'));
->>>>>>> origin/main
         }
     } catch (error) {
         console.error('Save Error:', error);
