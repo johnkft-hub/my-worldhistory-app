@@ -1,5 +1,5 @@
 const express = require('express');
-const { Pool } = require('pg');
+const { Pool } = require('pg');          // ✅ mysql2 → pg (PostgreSQL)
 const cors = require('cors');
 const path = require('path');
 const app = express();
@@ -11,20 +11,12 @@ app.use(express.static(path.join(__dirname)));
 const PORT = process.env.PORT || 3000;
 
 // ──────────────────────────────────────────────
-// 🔴 수정 1: DATABASE_URL 없을 때 조기 종료 (production)
-// ──────────────────────────────────────────────
-if (!process.env.DATABASE_URL && process.env.NODE_ENV === 'production') {
-    console.error('❌ DATABASE_URL 환경변수가 설정되지 않았습니다. Render 환경변수를 확인하세요.');
-    process.exit(1);
-}
-
-// ──────────────────────────────────────────────
-// PostgreSQL 연결
+// PostgreSQL 연결 (Render 환경변수 DATABASE_URL 자동 사용)
 // ──────────────────────────────────────────────
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.DATABASE_URL
-        ? { rejectUnauthorized: false }
+        ? { rejectUnauthorized: false }  // Render PostgreSQL은 SSL 필수
         : false
 });
 
@@ -65,6 +57,7 @@ app.get('/', (req, res) => {
 app.get('/api/events', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM events ORDER BY year ASC');
+        // DB의 description 필드를 클라이언트 desc로 매핑
         const mapped = result.rows.map(row => ({
             id:         row.id,
             year:       row.year,
@@ -94,7 +87,6 @@ app.post('/api/events', async (req, res) => {
         res.json({ id: result.rows[0].id, year, title, region, desc, importance });
     } catch (err) {
         console.error('저장 에러:', err.message);
-        // 🔴 수정 2: error 필드로 통일
         res.status(500).json({ error: err.message });
     }
 });
