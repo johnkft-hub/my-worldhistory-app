@@ -82,35 +82,39 @@ app.get('/api/events', async (req, res) => {
 
 // 추가
 app.post('/api/events', async (req, res) => {
-    const { year, title, region, desc, importance } = req.body;
+    const { year, title, region, desc, description, importance } = req.body;
+    const finalDesc = desc || description || '';
     if (!year || !title) {
         return res.status(400).json({ error: '연도와 제목은 필수 항목입니다.' });
     }
     try {
         const result = await pool.query(
             'INSERT INTO events (year, title, region, description, importance) VALUES ($1,$2,$3,$4,$5) RETURNING id',
-            [year, title, region, desc, importance]
+            [year, title, region, finalDesc, importance]
         );
-        res.json({ id: result.rows[0].id, year, title, region, desc, importance });
+        res.json({ id: result.rows[0].id, year, title, region, desc: finalDesc, importance });
     } catch (err) {
         console.error('저장 에러:', err.message);
-        // 🔴 수정 2: error 필드로 통일
         res.status(500).json({ error: err.message });
     }
 });
 
 // 수정
 app.put('/api/events/:id', async (req, res) => {
-    const { year, title, region, desc, importance } = req.body;
+    const { year, title, region, desc, description, importance } = req.body;
+    const finalDesc = desc || description || '';
+    if (!year || !title) {
+        return res.status(400).json({ error: '연도와 제목은 필수 항목입니다.' });
+    }
     try {
         const result = await pool.query(
             'UPDATE events SET year=$1, title=$2, region=$3, description=$4, importance=$5 WHERE id=$6',
-            [year, title, region, desc, importance, req.params.id]
+            [year, title, region, finalDesc, importance, req.params.id]
         );
         if (result.rowCount === 0) {
             return res.status(404).json({ error: '사건을 찾을 수 없습니다.' });
         }
-        res.json({ success: true });
+        res.json({ success: true, year, title, region, desc: finalDesc, importance });
     } catch (err) {
         console.error('수정 에러:', err.message);
         res.status(500).json({ error: err.message });
