@@ -14,11 +14,9 @@
   --accent:#4A7CFF;--accent2:#FF6B6B;--success:#4CAF8A;
 }
 body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;overflow-x:hidden}
-.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%, #1a0a2e 0%, transparent 50%),radial-gradient(ellipse at 80% 80%, #0a1a2e 0%, transparent 50%),var(--deep)}
-
-/* Header */
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,#1a0a2e 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,#0a1a2e 0%,transparent 50%),var(--deep)}
 .header{position:relative;z-index:10;background:linear-gradient(180deg,rgba(10,5,20,0.98) 0%,rgba(13,13,26,0.95) 100%);border-bottom:1px solid var(--gold-dark);padding:0 2rem}
-.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:flex;align-items:center;gap:12px}
 .logo-icon{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
 .logo-text{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;color:var(--gold-light);letter-spacing:0.05em}
@@ -28,32 +26,27 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .btn:hover{border-color:var(--gold);color:var(--gold)}
 .btn-primary{background:var(--gold);border-color:var(--gold);color:#000;font-weight:500}
 .btn-primary:hover{background:var(--gold-light);color:#000}
-
-/* Filter bar */
-.filterbar{position:relative;z-index:10;background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:12px 2rem}
-.filterbar-inner{max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.filter-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px}
-.chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
+.btn-danger{border-color:#FF6B6B;color:#FF6B6B}
+.filterbar{position:relative;z-index:10;background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:10px 2rem}
+.filterbar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filter-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px;white-space:nowrap}
+.chip{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
 .chip:hover,.chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
 .chip.active{font-weight:500}
+.chip-add{border-style:dashed;color:var(--muted)}
+.chip-add:hover{border-color:var(--success);color:var(--success)}
 .search-wrap{margin-left:auto;position:relative}
-.search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:200px;outline:none}
+.search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:180px;outline:none}
 .search-input:focus{border-color:var(--gold)}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
 .view-toggles{display:flex;gap:4px;margin-left:8px}
 .view-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
 .view-btn.active,.view-btn:hover{border-color:var(--gold);color:var(--gold)}
-
-/* Main layout */
-.main{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:2rem}
-
-/* Stats bar */
-.stats{display:flex;gap:16px;margin-bottom:24px}
-.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 20px;flex:1;text-align:center}
-.stat-num{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:600;color:var(--gold)}
-.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:0.05em}
-
-/* Timeline view */
+.main{position:relative;z-index:5;max-width:1400px;margin:0 auto;padding:1.5rem 2rem}
+.stats{display:flex;gap:12px;margin-bottom:20px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;text-align:center}
+.stat-num{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;color:var(--gold)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
 .timeline-wrap{position:relative}
 .timeline-axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--border) 5%,var(--border) 95%,transparent);transform:translateX(-50%)}
 .timeline-item{display:flex;gap:24px;margin-bottom:16px;position:relative;align-items:flex-start}
@@ -65,32 +58,34 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .event-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);opacity:0}
 .event-card:hover{border-color:var(--gold-dark);transform:translateY(-2px)}
 .event-card:hover::before{opacity:1}
-.event-year{font-family:'Noto Serif KR',serif;font-size:10px;color:var(--gold);font-weight:600;letter-spacing:0.1em;margin-bottom:0;text-transform:uppercase}
-.event-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px;margin-top:1px;line-height:1.3}
-.event-meta{display:flex;gap:5px;flex-wrap:nowrap;align-items:center;margin-bottom:1px}
-.event-region{background:rgba(74,124,255,0.15);color:#7BA3FF;border-radius:4px;padding:1px 5px;font-size:10px}
-.event-importance{display:flex;gap:1px}
-.star{color:var(--gold);font-size:9px}
-.star.empty{color:var(--border)}
 .event-desc{font-size:11px;color:var(--muted);margin-top:1px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-/* Card grid view */
 .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.grid-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
-.grid-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity 0.2s}
+.grid-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
 .grid-card:hover{border-color:var(--gold-dark);transform:translateY(-3px)}
-.grid-card:hover::after{opacity:1}
-.grid-card-year{font-family:'Noto Serif KR',serif;font-size:28px;font-weight:700;color:var(--gold);line-height:1}
-.grid-card-bc{font-size:13px;color:var(--gold-dark);margin-left:4px}
-.grid-card-title{font-size:14px;font-weight:500;margin:10px 0 8px;line-height:1.4}
+.grid-card-title{font-size:14px;font-weight:500;margin:6px 0 4px;line-height:1.4}
 .grid-card-desc{font-size:12px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-
-/* Era divider */
-.era-divider{display:flex;align-items:center;gap:16px;margin:32px 0 24px;position:relative;z-index:5}
+.era-divider{display:flex;align-items:center;gap:16px;margin:24px 0 16px;position:relative;z-index:5}
 .era-line{flex:1;height:1px;background:var(--border)}
-.era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap}
+.era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
-/* Modal */
+/* ── 비교 타임라인 뷰 ── */
+.compare-bar{background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:8px 2rem;display:none}
+.compare-bar.visible{display:block}
+.compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
+.compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
+.compare-chip.selected{font-weight:500}
+.compare-wrap{display:grid;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.compare-col{min-width:0}
+.compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:0;z-index:5}
+.compare-col-body{padding:8px;min-height:200px}
+.compare-divider{width:1px;background:var(--border)}
+.compare-event{border-radius:4px;padding:5px 8px;margin-bottom:5px;cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
+.compare-event:hover{opacity:0.85}
+.compare-event-year{font-size:9px;font-weight:600;letter-spacing:0.05em}
+.compare-event-title{font-size:11px;font-weight:500;margin-top:1px;line-height:1.3}
+.compare-spacer{height:8px}
+
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;position:relative}
 .modal-header{padding:24px 24px 0;border-bottom:1px solid var(--border);margin-bottom:24px;padding-bottom:16px}
@@ -104,10 +99,8 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .modal-desc{font-size:14px;color:var(--muted);line-height:1.8}
 .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:1px solid var(--border);border-radius:50%;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .modal-close:hover{border-color:var(--gold);color:var(--gold)}
-
-/* Form */
 .form-section{margin-bottom:16px}
-.form-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block;letter-spacing:0.05em}
+.form-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
 .form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color 0.2s}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
 .form-textarea{resize:vertical;min-height:80px}
@@ -119,18 +112,13 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-btn{padding:8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;text-align:center}
 .era-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-
-/* Empty state */
 .empty{text-align:center;padding:60px;color:var(--muted)}
 .empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
 .empty-text{font-size:14px}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--surface)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
-
 .hidden{display:none!important}
 </style>
 </head>
@@ -147,21 +135,17 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn" onclick="openAddRegionModal()">+ 지역 추가</button>
       <button class="btn btn-primary" onclick="openAddModal()">+ 사건 추가</button>
     </div>
   </div>
 </header>
 
+<!-- 일반 필터바 -->
 <div class="filterbar">
   <div class="filterbar-inner">
     <span class="filter-label">지역</span>
-    <button class="chip active" data-region="전체" onclick="setRegion('전체',this)">전체</button>
-    <button class="chip" data-region="아시아" onclick="setRegion('아시아',this)">아시아</button>
-    <button class="chip" data-region="유럽" onclick="setRegion('유럽',this)">유럽</button>
-    <button class="chip" data-region="아프리카" onclick="setRegion('아프리카',this)">아프리카</button>
-    <button class="chip" data-region="아메리카" onclick="setRegion('아메리카',this)">아메리카</button>
-    <button class="chip" data-region="중동" onclick="setRegion('중동',this)">중동</button>
-    <button class="chip" data-region="전세계" onclick="setRegion('전세계',this)">전세계</button>
+    <div id="region-chips"></div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="사건 검색..." oninput="setSearch(this.value)" />
@@ -169,7 +153,16 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
     <div class="view-toggles">
       <button class="view-btn active" id="btn-timeline" onclick="setView('timeline')" title="타임라인 뷰">≡</button>
       <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="카드 그리드">⊞</button>
+      <button class="view-btn" id="btn-compare" onclick="setView('compare')" title="비교 타임라인">⫿</button>
     </div>
+  </div>
+</div>
+
+<!-- 비교 뷰 전용 바 (비교 지역 선택) -->
+<div class="compare-bar" id="compare-bar">
+  <div class="compare-bar-inner">
+    <span class="compare-label">비교 지역 선택:</span>
+    <div id="compare-region-chips"></div>
   </div>
 </div>
 
@@ -178,9 +171,9 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
   <div id="content"></div>
 </div>
 
-<!-- Detail Modal -->
+<!-- 상세 모달 -->
 <div class="modal-overlay hidden" id="detail-modal">
-  <div class="modal" id="detail-modal-inner">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
     <div class="modal-header">
       <div class="modal-year" id="d-year"></div>
@@ -193,15 +186,14 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       </div>
       <p class="modal-desc" id="d-desc"></p>
     </div>
-    <!-- 🟡 수정 3: 삭제/수정 버튼 추가 -->
     <div class="modal-footer">
-      <button class="btn" id="d-delete-btn" style="border-color:#FF6B6B;color:#FF6B6B;" onclick="deleteEvent()">🗑 삭제</button>
-      <button class="btn btn-primary" id="d-edit-btn" onclick="editFromDetail()">✏️ 수정</button>
+      <button class="btn btn-danger" onclick="deleteEvent()">🗑 삭제</button>
+      <button class="btn btn-primary" onclick="editFromDetail()">✏️ 수정</button>
     </div>
   </div>
 </div>
 
-<!-- Add/Edit Modal -->
+<!-- 사건 추가/수정 모달 -->
 <div class="modal-overlay hidden" id="add-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
@@ -228,14 +220,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       </div>
       <div class="form-section">
         <label class="form-label">국가 / 지역</label>
-        <select class="form-select" id="f-region">
-          <option value="아시아">아시아</option>
-          <option value="유럽">유럽</option>
-          <option value="아프리카">아프리카</option>
-          <option value="아메리카">아메리카</option>
-          <option value="중동">중동</option>
-          <option value="전세계">전세계</option>
-        </select>
+        <select class="form-select" id="f-region"></select>
       </div>
       <div class="form-section">
         <label class="form-label">상세 설명</label>
@@ -259,64 +244,202 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
   </div>
 </div>
 
+<!-- 지역 추가 모달 -->
+<div class="modal-overlay hidden" id="add-region-modal">
+  <div class="modal" style="max-width:400px;">
+    <button class="modal-close" onclick="closeModal('add-region-modal')">✕</button>
+    <div class="modal-header">
+      <div class="modal-year" style="font-size:20px;">지역 추가</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <label class="form-label">지역명</label>
+        <input class="form-input" type="text" id="r-name" placeholder="예: 동남아시아" />
+      </div>
+      <div class="form-section">
+        <label class="form-label">색상 (비교 뷰에서 표시)</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="color-picker">
+          <span data-color="#C9A84C" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#C9A84C;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#7BA3FF" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#7BA3FF;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#5DCAA5" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#5DCAA5;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#F0997B" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#F0997B;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#AFA9EC" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#AFA9EC;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#73c991" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#73c991;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#F48771" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#F48771;cursor:pointer;border:2px solid transparent;"></span>
+          <span data-color="#9CDCFE" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#9CDCFE;cursor:pointer;border:2px solid transparent;"></span>
+        </div>
+        <input type="hidden" id="r-color" value="#7BA3FF" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('add-region-modal')">취소</button>
+      <button class="btn btn-primary" onclick="saveRegion()">추가하기</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// 상태 관리 변수
-let events = []; 
+let events = [];
+let regions = [];
 let currentRegion = '전체';
 let currentSearch = '';
 let currentView = 'timeline';
 let selectedImportance = 3;
 let selectedEra = 'AD';
 let editingId = null;
-let detailId = null; // 🟡 수정 3: 현재 상세보기 중인 id 추적
+let detailId = null;
+let mainRegion = null;
+let compareRegions = new Set();
 
-// 🟢 수정 4: XSS 방지 이스케이프 함수
 function escHtml(str) {
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// [수정] 서버로부터 데이터 불러오기 함수
+// ── 초기 데이터 로드 ──────────────────────────
+async function init() {
+    await fetchRegions();
+    await fetchEvents();
+}
+
+async function fetchRegions() {
+    try {
+        const res = await fetch('/api/regions');
+        regions = await res.json();
+        renderRegionChips();
+        renderCompareRegionChips();
+        renderRegionSelect();
+    } catch (err) {
+        console.error('지역 로드 에러:', err);
+        regions = [
+            {id:1,name:'아시아',color:'#C9A84C'},
+            {id:2,name:'유럽',color:'#7BA3FF'},
+            {id:3,name:'아프리카',color:'#5DCAA5'},
+            {id:4,name:'아메리카',color:'#F0997B'},
+            {id:5,name:'중동',color:'#AFA9EC'},
+            {id:6,name:'전세계',color:'#73c991'}
+        ];
+        renderRegionChips();
+        renderCompareRegionChips();
+        renderRegionSelect();
+    }
+}
+
 async function fetchEvents() {
     try {
-        const response = await fetch('/api/events');
-        if (!response.ok) throw new Error('데이터를 불러오는데 실패했습니다.');
-        events = await response.json();
-        render(); // 데이터를 가져온 후 화면 갱신
-    } catch (error) {
-        console.error('Fetch Error:', error);
-        // 서버가 없는 상태에서 접속 시 오류 메시지 출력
+        const res = await fetch('/api/events');
+        if (!res.ok) throw new Error('로드 실패');
+        events = await res.json();
+        render();
+    } catch (err) {
+        console.error('Fetch Error:', err);
         alert('서버 연결 오류: 백엔드 서버가 실행 중인지 확인하세요.');
     }
 }
 
+// ── 지역 칩 렌더링 ────────────────────────────
+function renderRegionChips() {
+    const wrap = document.getElementById('region-chips');
+    let html = `<button class="chip ${currentRegion==='전체'?'active':''}" onclick="setRegion('전체',this)">전체</button>`;
+    regions.forEach(r => {
+        html += `<button class="chip ${currentRegion===r.name?'active':''}" onclick="setRegion('${r.name}',this)">${r.name}</button>`;
+    });
+    wrap.innerHTML = html;
+}
+
+function renderCompareRegionChips() {
+    const wrap = document.getElementById('compare-region-chips');
+    if (!mainRegion) { wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);">먼저 메인 지역을 선택하세요</span>'; return; }
+    let html = '';
+    regions.filter(r => r.name !== mainRegion).forEach(r => {
+        const sel = compareRegions.has(r.name);
+        html += `<button class="compare-chip ${sel?'selected':''}" 
+            style="${sel?`border-color:${r.color};color:${r.color};background:${r.color}22;`:''}"
+            onclick="toggleCompareRegion('${r.name}',this,'${r.color}')">${r.name}</button>`;
+    });
+    wrap.innerHTML = html;
+}
+
+function renderRegionSelect() {
+    const sel = document.getElementById('f-region');
+    sel.innerHTML = regions.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+}
+
+// ── 지역 관련 함수 ─────────────────────────────
+function getRegionColor(name) {
+    const r = regions.find(r => r.name === name);
+    return r ? r.color : '#7BA3FF';
+}
+
+function setRegion(r, btn) {
+    currentRegion = r;
+    document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (currentView === 'compare') {
+        mainRegion = r === '전체' ? null : r;
+        compareRegions.clear();
+        renderCompareRegionChips();
+    }
+    render();
+}
+
+function toggleCompareRegion(name, btn, color) {
+    if (compareRegions.has(name)) {
+        compareRegions.delete(name);
+        btn.classList.remove('selected');
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        btn.style.background = '';
+    } else {
+        compareRegions.add(name);
+        btn.classList.add('selected');
+        btn.style.borderColor = color;
+        btn.style.color = color;
+        btn.style.background = color + '22';
+    }
+    render();
+}
+
+// ── 뷰 전환 ───────────────────────────────────
+function setView(v) {
+    currentView = v;
+    ['timeline','grid','compare'].forEach(id => {
+        document.getElementById('btn-'+id).classList.toggle('active', id === v);
+    });
+    const compareBar = document.getElementById('compare-bar');
+    if (v === 'compare') {
+        compareBar.classList.add('visible');
+        if (!mainRegion && currentRegion !== '전체') {
+            mainRegion = currentRegion;
+            renderCompareRegionChips();
+        }
+    } else {
+        compareBar.classList.remove('visible');
+    }
+    render();
+}
+
+// ── 필터 ──────────────────────────────────────
 function formatYear(y) {
     if (y < 0) return `기원전 ${Math.abs(y)}년`;
-    if (y === 0) return '1년 (AD)';
+    if (y === 0) return '1년';
     return `${y}년`;
 }
 
 function renderStars(n) {
-    let s = '';
-    for (let i = 1; i <= 5; i++) s += `<span class="star ${i <= n ? '' : 'empty'}">★</span>`;
-    return s;
+    return '★'.repeat(n) + '☆'.repeat(5-n);
 }
 
 function getFiltered() {
     return events.filter(e => {
         const regionOk = currentRegion === '전체' || e.region === currentRegion;
-        // e.desc가 null일 경우를 대비해 방어 코드 추가
-        const description = e.desc || e.description || ""; 
-        const searchOk = !currentSearch || 
-                         e.title.includes(currentSearch) || 
-                         description.includes(currentSearch) || 
-                         e.region.includes(currentSearch);
+        const desc = e.desc || e.description || '';
+        const searchOk = !currentSearch || e.title.includes(currentSearch) || desc.includes(currentSearch) || (e.region||'').includes(currentSearch);
         return regionOk && searchOk;
-    }).sort((a, b) => a.year - b.year);
+    }).sort((a,b) => a.year - b.year);
 }
 
 function getEras(filtered) {
-    const eras = [];
-    const groups = {};
+    const eras = [], groups = {};
     filtered.forEach(e => {
         let era;
         if (e.year < -500) era = '고대 (기원전 500년 이전)';
@@ -331,23 +454,45 @@ function getEras(filtered) {
     return {eras, groups};
 }
 
+function setSearch(v) { currentSearch = v; render(); }
+
+// ── 렌더링 ────────────────────────────────────
+function render() {
+    const filtered = getFiltered();
+    renderStats(filtered);
+    const content = document.getElementById('content');
+    if (currentView === 'timeline') content.innerHTML = renderTimeline(filtered);
+    else if (currentView === 'grid') content.innerHTML = renderGrid(filtered);
+    else content.innerHTML = renderCompare();
+}
+
 function renderStats(filtered) {
-    const regions = [...new Set(filtered.map(e => e.region))].length;
-    const avgImportance = filtered.length ? (filtered.reduce((s, e) => s + e.importance, 0) / filtered.length).toFixed(1) : 0;
-    const statsEl = document.getElementById('stats');
-    if(statsEl) {
-        statsEl.innerHTML = `
-            <div class="stat-card"><div class="stat-num">${filtered.length}</div><div class="stat-lbl">총 사건 수</div></div>
-            <div class="stat-card"><div class="stat-num">${regions}</div><div class="stat-lbl">관련 지역</div></div>
-            <div class="stat-card"><div class="stat-num">${filtered.length ? formatYear(filtered[0].year) : '—'}</div><div class="stat-lbl">최초 연도</div></div>
-            <div class="stat-card"><div class="stat-num">${avgImportance}</div><div class="stat-lbl">평균 중요도</div></div>
-        `;
-    }
+    const regionCount = [...new Set(filtered.map(e => e.region))].length;
+    const avg = filtered.length ? (filtered.reduce((s,e) => s+e.importance,0)/filtered.length).toFixed(1) : 0;
+    document.getElementById('stats').innerHTML = `
+        <div class="stat-card"><div class="stat-num">${filtered.length}</div><div class="stat-lbl">총 사건 수</div></div>
+        <div class="stat-card"><div class="stat-num">${regionCount}</div><div class="stat-lbl">관련 지역</div></div>
+        <div class="stat-card"><div class="stat-num">${filtered.length ? formatYear(filtered[0].year) : '—'}</div><div class="stat-lbl">최초 연도</div></div>
+        <div class="stat-card"><div class="stat-num">${avg}</div><div class="stat-lbl">평균 중요도</div></div>`;
+}
+
+function renderCard(e) {
+    const desc = escHtml(e.desc || e.description || '');
+    const color = getRegionColor(e.region);
+    return `<div class="event-card" onclick="showDetail(${e.id})">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:nowrap;">
+            <span style="font-size:10px;color:${color};font-weight:600;white-space:nowrap;">${formatYear(e.year)}</span>
+            <span style="background:${color}22;color:${color};border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;">${escHtml(e.region)}</span>
+            <span style="font-size:9px;color:${color};letter-spacing:-1px;">${renderStars(e.importance)}</span>
+        </div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px;line-height:1.3;">${escHtml(e.title)}</div>
+        <div class="event-desc">${desc}</div>
+    </div>`;
 }
 
 function renderTimeline(filtered) {
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
     const {eras, groups} = getEras(filtered);
-    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">해당하는 역사적 사건이 없습니다.</div></div>`;
     let html = '<div class="timeline-wrap"><div class="timeline-axis"></div>';
     let idx = 0;
     eras.forEach(era => {
@@ -362,44 +507,29 @@ function renderTimeline(filtered) {
             idx++;
         });
     });
-    html += '</div>';
-    return html;
-}
-
-function renderCard(e) {
-    const description = escHtml(e.desc || e.description || "");
-    const yr = e.year < 0 ? `기원전 ${Math.abs(e.year)}년` : `${e.year}년`;
-    const stars = '★'.repeat(e.importance) + '☆'.repeat(5 - e.importance);
-    return `<div class="event-card" onclick="showDetail(${e.id})">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:nowrap;">
-            <span style="font-size:10px;color:#C9A84C;font-weight:600;white-space:nowrap;">${yr}</span>
-            <span style="background:rgba(74,124,255,0.15);color:#7BA3FF;border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;">${escHtml(e.region)}</span>
-            <span style="font-size:9px;color:#C9A84C;letter-spacing:-1px;">${stars}</span>
-        </div>
-        <div style="font-size:13px;font-weight:500;color:#E8E0CC;margin-bottom:1px;line-height:1.3;">${escHtml(e.title)}</div>
-        <div style="font-size:11px;color:#8A8FAA;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${description}</div>
-    </div>`;
+    return html + '</div>';
 }
 
 function renderGrid(filtered) {
-    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">해당하는 역사적 사건이 없습니다.</div></div>`;
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
     const {eras, groups} = getEras(filtered);
     let html = '';
     eras.forEach(era => {
         html += `<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
         html += '<div class="card-grid">';
         groups[era].forEach(e => {
-            const description = escHtml(e.desc || e.description || "");
+            const desc = escHtml(e.desc || e.description || '');
+            const color = getRegionColor(e.region);
             const yrLabel = e.year < 0 ? `기원전 ${Math.abs(e.year)}년` : `${e.year}년`;
-            const stars = '★'.repeat(e.importance) + '☆'.repeat(5 - e.importance);
+            const stars = renderStars(e.importance);
             html += `<div class="grid-card" onclick="showDetail(${e.id})">
                 <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:nowrap;">
-                    <span style="font-size:10px;color:#C9A84C;font-weight:600;white-space:nowrap;">${yrLabel}</span>
-                    <span style="background:rgba(74,124,255,0.15);color:#7BA3FF;border-radius:4px;padding:1px 5px;font-size:10px;">${escHtml(e.region)}</span>
-                    <span style="font-size:9px;color:#C9A84C;letter-spacing:-1px;">${stars}</span>
+                    <span style="font-size:10px;color:${color};font-weight:600;white-space:nowrap;">${yrLabel}</span>
+                    <span style="background:${color}22;color:${color};border-radius:4px;padding:1px 5px;font-size:10px;">${escHtml(e.region)}</span>
+                    <span style="font-size:9px;color:${color};letter-spacing:-1px;">${stars}</span>
                 </div>
                 <div class="grid-card-title">${escHtml(e.title)}</div>
-                <div class="grid-card-desc">${description}</div>
+                <div class="grid-card-desc">${desc}</div>
             </div>`;
         });
         html += '</div>';
@@ -407,65 +537,97 @@ function renderGrid(filtered) {
     return html;
 }
 
-function render() {
-    const filtered = getFiltered();
-    renderStats(filtered);
-    const content = document.getElementById('content');
-    content.innerHTML = currentView === 'timeline' ? renderTimeline(filtered) : renderGrid(filtered);
+// ── 비교 타임라인 렌더링 ──────────────────────
+function renderCompare() {
+    if (!mainRegion) {
+        return `<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">위 필터바에서 메인으로 볼 지역을 선택하세요</div></div>`;
+    }
+
+    const allCols = [mainRegion, ...compareRegions];
+    const colColors = allCols.map(name => getRegionColor(name));
+
+    // 각 컬럼별 이벤트
+    const colEvents = allCols.map(name =>
+        events.filter(e => e.region === name).sort((a,b) => a.year - b.year)
+    );
+
+    if (colEvents[0].length === 0) {
+        return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.</div></div>`;
+    }
+
+    // 메인 지역 연도 기준으로 전체 연도 범위 설정
+    const allYears = colEvents.flat().map(e => e.year);
+    const minYear = Math.min(...allYears);
+    const maxYear = Math.max(...allYears);
+
+    // 컬럼 수에 따라 그리드 설정
+    const colCount = allCols.length;
+    const gridTemplate = Array(colCount).fill('1fr').join(' 1px ');
+
+    let html = `<div class="compare-wrap" style="grid-template-columns:${gridTemplate};">`;
+
+    allCols.forEach((name, ci) => {
+        const color = colColors[ci];
+        const isMain = ci === 0;
+        html += `<div class="compare-col" style="background:${isMain ? 'rgba(201,168,76,0.04)' : 'var(--surface)'};">
+            <div class="compare-col-header" style="color:${color};background:${color}18;border-bottom-color:${color}44;">
+                ${name}${isMain ? ' ★ 메인' : ''}
+            </div>
+            <div class="compare-col-body">`;
+
+        colEvents[ci].forEach(e => {
+            const desc = escHtml(e.desc || e.description || '');
+            const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
+            html += `<div class="compare-event" onclick="showDetail(${e.id})"
+                style="background:${color}15;border-left-color:${color};">
+                <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
+                <div class="compare-event-title">${escHtml(e.title)}</div>
+                ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">${desc}</div>` : ''}
+            </div>`;
+        });
+
+        html += `</div></div>`;
+        if (ci < colCount - 1) html += `<div class="compare-divider"></div>`;
+    });
+
+    html += '</div>';
+
+    if (compareRegions.size === 0) {
+        html += `<div style="text-align:center;padding:16px;font-size:12px;color:var(--muted);">위 비교 지역 선택 바에서 비교할 지역을 추가하세요</div>`;
+    }
+
+    return html;
 }
 
-// UI 이벤트 함수들
-function setRegion(r, btn) {
-    currentRegion = r;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-}
-function setSearch(v) { currentSearch = v; render(); }
-function setView(v) {
-    currentView = v;
-    document.getElementById('btn-timeline').classList.toggle('active', v === 'timeline');
-    document.getElementById('btn-grid').classList.toggle('active', v === 'grid');
-    render();
-}
-
+// ── 상세 / 삭제 / 수정 ────────────────────────
 function showDetail(id) {
     const e = events.find(x => x.id == id);
     if (!e) return;
-    detailId = id; // 🟡 수정 3: 현재 id 저장
+    detailId = id;
     document.getElementById('d-year').textContent = formatYear(e.year);
     document.getElementById('d-title').textContent = e.title;
     document.getElementById('d-region').textContent = e.region;
     document.getElementById('d-importance').innerHTML = renderStars(e.importance);
-    document.getElementById('d-desc').textContent = e.desc || e.description || "";
+    document.getElementById('d-desc').textContent = e.desc || e.description || '';
     document.getElementById('detail-modal').classList.remove('hidden');
 }
 
-// 🟡 수정 3: 삭제 함수
 async function deleteEvent() {
     if (!detailId) return;
     if (!confirm('정말 삭제하시겠습니까?')) return;
     try {
-        const response = await fetch(`/api/events/${detailId}`, { method: 'DELETE' });
-        if (response.ok) {
-            closeModal('detail-modal');
-            await fetchEvents();
-        } else {
-            const errorData = await response.json();
-            alert('삭제 실패: ' + (errorData.error || '서버 오류가 발생했습니다.'));
-        }
-    } catch (error) {
-        console.error('Delete Error:', error);
-        alert('서버 전송 오류가 발생했습니다.');
-    }
+        const res = await fetch(`/api/events/${detailId}`, { method: 'DELETE' });
+        if (res.ok) { closeModal('detail-modal'); await fetchEvents(); }
+        else { const d = await res.json(); alert('삭제 실패: ' + (d.error||'오류')); }
+    } catch (err) { alert('서버 오류가 발생했습니다.'); }
 }
 
-// 🟡 수정 3: 상세보기에서 수정 모달 열기
 function editFromDetail() {
     closeModal('detail-modal');
     openAddModal(detailId);
 }
 
+// ── 사건 추가/수정 모달 ───────────────────────
 function openAddModal(id) {
     editingId = id || null;
     if (id) {
@@ -474,14 +636,13 @@ function openAddModal(id) {
         document.getElementById('f-year').value = Math.abs(e.year);
         document.getElementById('f-title').value = e.title;
         document.getElementById('f-region').value = e.region;
-        document.getElementById('f-desc').value = e.desc || e.description || "";
+        document.getElementById('f-desc').value = e.desc || e.description || '';
         selectedImportance = e.importance;
         selectedEra = e.year < 0 ? 'BC' : 'AD';
     } else {
         document.getElementById('form-modal-title').textContent = '새 역사적 사건 추가';
         document.getElementById('f-year').value = '';
         document.getElementById('f-title').value = '';
-        document.getElementById('f-region').value = '아시아';
         document.getElementById('f-desc').value = '';
         selectedImportance = 3;
         selectedEra = 'AD';
@@ -491,62 +652,71 @@ function openAddModal(id) {
     document.getElementById('add-modal').classList.remove('hidden');
 }
 
-// [핵심 수정] 데이터 저장 로직
 async function saveEvent() {
     const yrInput = document.getElementById('f-year').value;
     const title = document.getElementById('f-title').value.trim();
     const region = document.getElementById('f-region').value;
     const desc = document.getElementById('f-desc').value.trim();
-
     if (!yrInput || !title) { alert('연도와 사건명은 필수입니다.'); return; }
-    
-    const yearNum = parseInt(yrInput);
-    const year = selectedEra === 'BC' ? -Math.abs(yearNum) : Math.abs(yearNum);
-    
-    // 백엔드 DB 필드명에 맞춰 객체 생성 (desc 또는 description)
-    const eventData = { 
-        year, 
-        title, 
-        region, 
-        desc: desc, // 백엔드에서 description을 쓴다면 필드명을 변경하세요
-        importance: selectedImportance 
-    };
-
+    const year = selectedEra === 'BC' ? -Math.abs(parseInt(yrInput)) : Math.abs(parseInt(yrInput));
+    const eventData = { year, title, region, desc, importance: selectedImportance };
     try {
-        let response;
         const url = editingId ? `/api/events/${editingId}` : '/api/events';
         const method = editingId ? 'PUT' : 'POST';
-
-        response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData)
-        });
-
-        if (response.ok) {
-            closeModal('add-modal');
-            await fetchEvents(); 
-        } else {
-            const errorData = await response.json();
-            // 🔴 수정 2: error 필드 우선, message 필드 fallback
-            alert('저장 실패: ' + (errorData.error || errorData.message || '서버 오류가 발생했습니다.'));
-        }
-    } catch (error) {
-        console.error('Save Error:', error);
-        alert('서버 전송 오류가 발생했습니다. 네트워크 상태나 서버 주소를 확인하세요.');
-    }
+        const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(eventData) });
+        if (res.ok) { closeModal('add-modal'); await fetchEvents(); }
+        else { const d = await res.json(); alert('저장 실패: ' + (d.error || d.message || '오류')); }
+    } catch (err) { alert('서버 전송 오류가 발생했습니다.'); }
 }
 
+// ── 지역 추가 모달 ─────────────────────────────
+let selectedColor = '#7BA3FF';
+
+function openAddRegionModal() {
+    document.getElementById('r-name').value = '';
+    selectedColor = '#7BA3FF';
+    document.querySelectorAll('#color-picker span').forEach(s => {
+        s.style.border = s.dataset.color === selectedColor ? '2px solid white' : '2px solid transparent';
+    });
+    document.getElementById('add-region-modal').classList.remove('hidden');
+}
+
+function selectColor(el) {
+    selectedColor = el.dataset.color;
+    document.querySelectorAll('#color-picker span').forEach(s => {
+        s.style.border = s.dataset.color === selectedColor ? '2px solid white' : '2px solid transparent';
+    });
+}
+
+async function saveRegion() {
+    const name = document.getElementById('r-name').value.trim();
+    if (!name) { alert('지역명을 입력하세요.'); return; }
+    try {
+        const res = await fetch('/api/regions', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ name, color: selectedColor })
+        });
+        if (res.ok) {
+            closeModal('add-region-modal');
+            await fetchRegions();
+            alert(`'${name}' 지역이 추가됐습니다!`);
+        } else {
+            const d = await res.json();
+            alert('추가 실패: ' + (d.error || '오류'));
+        }
+    } catch (err) { alert('서버 오류가 발생했습니다.'); }
+}
+
+// ── UI 헬퍼 ───────────────────────────────────
 function selectImportance(n) { selectedImportance = n; updateImportanceUI(); }
 function updateImportanceUI() {
-    document.querySelectorAll('.importance-btn').forEach((b, i) => {
-        b.classList.toggle('selected', i + 1 === selectedImportance);
-    });
+    document.querySelectorAll('.importance-btn').forEach((b,i) => b.classList.toggle('selected', i+1===selectedImportance));
 }
 function selectEra(era) { selectedEra = era; updateEraUI(); }
 function updateEraUI() {
-    document.getElementById('era-ad').classList.toggle('selected', selectedEra === 'AD');
-    document.getElementById('era-bc').classList.toggle('selected', selectedEra === 'BC');
+    document.getElementById('era-ad').classList.toggle('selected', selectedEra==='AD');
+    document.getElementById('era-bc').classList.toggle('selected', selectedEra==='BC');
 }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -556,8 +726,7 @@ document.addEventListener('click', e => {
     }
 });
 
-// 초기 실행
-fetchEvents();
+init();
 </script>
 </body>
 </html>
