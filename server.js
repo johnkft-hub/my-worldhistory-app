@@ -104,7 +104,8 @@ app.get('/api/events', async (req, res) => {
         const result = await pool.query('SELECT * FROM events ORDER BY year ASC');
         const mapped = result.rows.map(row => ({
             id: row.id, year: row.year, title: row.title,
-            region: row.region, desc: row.description, importance: row.importance
+            region: row.region, desc: row.description, importance: row.importance,
+            created_at: row.created_at
         }));
         res.json(mapped);
     } catch (err) {
@@ -140,24 +141,6 @@ app.put('/api/events/:id', async (req, res) => {
         );
         if (result.rowCount === 0) return res.status(404).json({ error: '사건을 찾을 수 없습니다.' });
         res.json({ success: true, year, title, region, desc: finalDesc, importance });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 일별 업데이트 통계
-app.get('/api/stats/daily', async (req, res) => {
-    try {
-        const result = await pool.query(`
-            SELECT
-                DATE(created_at AT TIME ZONE 'Asia/Seoul') AS day,
-                COUNT(*)::int AS count
-            FROM events
-            GROUP BY DATE(created_at AT TIME ZONE 'Asia/Seoul')
-            ORDER BY day DESC
-            LIMIT 30
-        `);
-        res.json(result.rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
