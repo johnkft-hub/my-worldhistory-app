@@ -72,8 +72,8 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
 /* ── 비교 타임라인 뷰 ── */
-.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease}
-.compare-bar.visible{max-height:100px;padding:10px 2rem}
+.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease}
+.compare-bar.visible{max-height:200px;padding:12px 2rem}
 .compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
@@ -351,13 +351,23 @@ function renderRegionChips() {
 
 function renderCompareRegionChips() {
     const wrap = document.getElementById('compare-region-chips');
-    if (!mainRegion) { wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);">먼저 메인 지역을 선택하세요</span>'; return; }
+    if (!mainRegion) {
+        wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);">필터바에서 지역을 선택하면 메인으로 설정됩니다</span>';
+        return;
+    }
     let html = '';
+    // 메인 지역 표시
+    const mainColor = getRegionColor(mainRegion);
+    html += `<span style="font-size:11px;color:${mainColor};font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid ${mainColor};background:${mainColor}22;margin-right:4px;">★ ${mainRegion} (메인)</span>`;
+    // 비교 추가 가능한 지역 칩
     regions.filter(r => r.name !== mainRegion).forEach(r => {
         const sel = compareRegions.has(r.name);
-        html += `<button class="compare-chip ${sel?'selected':''}" 
-            style="${sel?`border-color:${r.color};color:${r.color};background:${r.color}22;`:''}"
-            onclick="toggleCompareRegion('${r.name}',this,'${r.color}')">${r.name}</button>`;
+        const style = sel
+            ? `border-color:${r.color};color:${r.color};background:${r.color}22;`
+            : '';
+        html += `<button class="compare-chip ${sel ? 'selected' : ''}"
+            style="${style}"
+            onclick="toggleCompareRegion('${r.name}','${r.color}')">${r.name}</button>`;
     });
     wrap.innerHTML = html;
 }
@@ -378,27 +388,25 @@ function setRegion(r, btn) {
     document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
     if (btn) btn.classList.add('active');
     if (currentView === 'compare') {
-        mainRegion = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
-        compareRegions.clear();
+        // 비교 뷰에서 지역 선택 시 무조건 메인 지역 업데이트
+        const newMain = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
+        if (newMain !== mainRegion) {
+            mainRegion = newMain;
+            compareRegions.clear();
+        }
         renderCompareRegionChips();
     }
     render();
 }
 
-function toggleCompareRegion(name, btn, color) {
+function toggleCompareRegion(name, color) {
+    // btn 참조 대신 DOM에서 직접 찾아 처리 (이벤트 버블링 문제 방지)
     if (compareRegions.has(name)) {
         compareRegions.delete(name);
-        btn.classList.remove('selected');
-        btn.style.borderColor = '';
-        btn.style.color = '';
-        btn.style.background = '';
     } else {
         compareRegions.add(name);
-        btn.classList.add('selected');
-        btn.style.borderColor = color;
-        btn.style.color = color;
-        btn.style.background = color + '22';
     }
+    renderCompareRegionChips();
     render();
 }
 
@@ -411,13 +419,14 @@ function setView(v) {
     const compareBar = document.getElementById('compare-bar');
     if (v === 'compare') {
         compareBar.classList.add('visible');
-        // 메인 지역 자동 설정: 현재 선택된 지역 or 첫번째 지역
-        if (!mainRegion) {
-            mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
-        }
+        // 메인 지역 설정: 현재 선택된 지역 우선, 없으면 첫번째 지역
+        mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
+        compareRegions.clear();
         renderCompareRegionChips();
     } else {
         compareBar.classList.remove('visible');
+        mainRegion = null;
+        compareRegions.clear();
     }
     render();
 }
@@ -552,7 +561,7 @@ function renderGrid(filtered) {
 // ── 비교 타임라인 렌더링 ──────────────────────
 function renderCompare() {
     if (!mainRegion) {
-        return `<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">위 필터바에서 메인으로 볼 지역을 선택하세요</div></div>`;
+        return `<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">위 필터바에서 지역을 선택하면 비교 타임라인이 시작됩니다</div></div>`;
     }
 
     const allCols = [mainRegion, ...compareRegions];
@@ -564,11 +573,19 @@ function renderCompare() {
     );
 
     if (colEvents[0].length === 0) {
-        return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.</div></div>`;
+        return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.<br><span style="font-size:12px;">사건을 먼저 추가하거나 다른 지역을 선택하세요.</span></div></div>`;
     }
 
-    // flex 레이아웃으로 컬럼 구성 (grid 구분선 버그 수정)
-    let html = `<div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;">`;
+    // 비교 지역 없을 때 안내
+    let guideHtml = '';
+    if (compareRegions.size === 0) {
+        guideHtml = `<div style="margin-bottom:12px;padding:8px 14px;background:rgba(201,168,76,0.08);border:1px dashed var(--gold-dark);border-radius:8px;font-size:12px;color:var(--muted);text-align:center;">
+            위 비교 바에서 버튼을 클릭해 비교할 지역을 추가하세요
+        </div>`;
+    }
+
+    // flex 레이아웃으로 컬럼 구성
+    let html = guideHtml + `<div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;">`;
 
     allCols.forEach((name, ci) => {
         const color = colColors[ci];
@@ -577,30 +594,29 @@ function renderCompare() {
 
         html += `<div style="flex:1;min-width:0;${borderLeft}background:${isMain ? 'rgba(201,168,76,0.04)' : 'var(--surface)'};">
             <div class="compare-col-header" style="color:${color};background:${color}18;border-bottom:1px solid ${color}44;">
-                ${name}${isMain ? ' ★ 메인' : ''}
+                ${name}${isMain ? ' ★' : ''}
             </div>
             <div class="compare-col-body">`;
 
-        colEvents[ci].forEach(e => {
-            const desc = escHtml(e.desc || e.description || '');
-            const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
-            html += `<div class="compare-event" onclick="showDetail(${e.id})"
-                style="background:${color}15;border-left:3px solid ${color};">
-                <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
-                <div class="compare-event-title">${escHtml(e.title)}</div>
-                ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">${desc}</div>` : ''}
-            </div>`;
-        });
+        if (colEvents[ci].length === 0) {
+            html += `<div style="padding:20px;text-align:center;font-size:11px;color:var(--muted);">사건 없음</div>`;
+        } else {
+            colEvents[ci].forEach(e => {
+                const desc = escHtml(e.desc || e.description || '');
+                const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
+                html += `<div class="compare-event" onclick="showDetail(${e.id})"
+                    style="background:${color}15;border-left:3px solid ${color};">
+                    <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
+                    <div class="compare-event-title">${escHtml(e.title)}</div>
+                    ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">${desc}</div>` : ''}
+                </div>`;
+            });
+        }
 
         html += `</div></div>`;
     });
 
     html += '</div>';
-
-    if (compareRegions.size === 0) {
-        html += `<div style="text-align:center;padding:16px;font-size:12px;color:var(--muted);">위 비교 지역 선택 바에서 비교할 지역을 추가하세요</div>`;
-    }
-
     return html;
 }
 
