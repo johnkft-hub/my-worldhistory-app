@@ -72,8 +72,8 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
 /* ── 비교 타임라인 뷰 ── */
-.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease}
-.compare-bar.visible{max-height:100px;padding:10px 2rem}
+.compare-bar{position:relative;z-index:9;background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease}
+.compare-bar.visible{max-height:160px;padding:12px 2rem}
 .compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
@@ -417,12 +417,11 @@ function setView(v) {
     });
     const compareBar = document.getElementById('compare-bar');
     if (v === 'compare') {
-        compareBar.classList.add('visible');
-        // 메인 지역 자동 설정: 현재 선택된 지역 or 첫번째 지역
-        if (!mainRegion) {
-            mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
-        }
+        // 메인 지역: 현재 선택된 지역 우선, 전체/없으면 첫번째 지역
+        mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
+        compareRegions.clear();
         renderCompareRegionChips();
+        compareBar.classList.add('visible');
     } else {
         compareBar.classList.remove('visible');
     }
