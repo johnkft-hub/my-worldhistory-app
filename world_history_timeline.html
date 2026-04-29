@@ -18,7 +18,7 @@
 }
 body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;overflow-x:hidden}
 .stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,#1a0a2e 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,#0a1a2e 0%,transparent 50%),var(--deep)}
-.header{position:relative;z-index:10;background:linear-gradient(180deg,rgba(10,5,20,0.98) 0%,rgba(13,13,26,0.95) 100%);border-bottom:1px solid var(--gold-dark);padding:0 2rem}
+.header{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,rgba(10,5,20,0.98) 0%,rgba(13,13,26,0.95) 100%);border-bottom:1px solid var(--gold-dark);padding:0 2rem}
 .header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
 .logo{display:flex;align-items:center;gap:12px}
 .logo-icon{width:36px;height:36px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -30,7 +30,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .btn-primary{background:var(--gold);border-color:var(--gold);color:#000;font-weight:500}
 .btn-primary:hover{background:var(--gold-light);color:#000}
 .btn-danger{border-color:#FF6B6B;color:#FF6B6B}
-.filterbar{position:relative;z-index:10;background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:10px 2rem}
+.filterbar{position:sticky;top:64px;z-index:29;background:rgba(18,18,42,0.95);border-bottom:1px solid var(--border);padding:10px 2rem}
 .filterbar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .filter-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px;white-space:nowrap}
 .chip{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
@@ -72,15 +72,15 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
 /* ── 비교 타임라인 뷰 ── */
-.compare-bar{position:relative;z-index:9;background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease}
+.compare-bar{position:sticky;top:114px;z-index:28;background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease}
 .compare-bar.visible{max-height:160px;padding:12px 2rem}
 .compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
 .compare-chip.selected{font-weight:500}
 /* 시각적 비교 타임라인 */
-.compare-grid{display:grid;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:0;z-index:5}
+.compare-grid{display:grid;border:1px solid var(--border);border-radius:8px;overflow:visible}
+.compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:var(--col-header-top,0px);z-index:20}
 .compare-era-row{display:contents}
 .compare-era-label{background:rgba(201,168,76,0.06);border-top:1px solid var(--gold-dark);border-bottom:1px solid var(--border);padding:5px 10px;font-family:'Noto Serif KR',serif;font-size:10px;color:var(--gold-dark);letter-spacing:0.15em;display:flex;align-items:center;justify-content:center;text-align:center;writing-mode:horizontal-tb}
 .compare-era-cell{border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid var(--border);padding:8px;min-height:60px;vertical-align:top}
@@ -422,10 +422,25 @@ function setView(v) {
         compareRegions.clear();
         renderCompareRegionChips();
         compareBar.classList.add('visible');
+        // 컬럼 헤더 sticky top 값 동적 계산
+        requestAnimationFrame(updateColHeaderTop);
     } else {
         compareBar.classList.remove('visible');
     }
     render();
+}
+
+function updateColHeaderTop() {
+    const header = document.querySelector('.header');
+    const filterbar = document.querySelector('.filterbar');
+    const comparebar = document.querySelector('.compare-bar');
+    const statsEl = document.querySelector('.stats');
+    let top = 0;
+    if (header) top += header.offsetHeight;
+    if (filterbar) top += filterbar.offsetHeight;
+    if (comparebar && comparebar.classList.contains('visible')) top += comparebar.offsetHeight;
+    if (statsEl) top += statsEl.offsetHeight + 20; // stats + margin
+    document.documentElement.style.setProperty('--col-header-top', top + 'px');
 }
 
 // ── 필터 ──────────────────────────────────────
@@ -473,7 +488,10 @@ function render() {
     const content = document.getElementById('content');
     if (currentView === 'timeline') content.innerHTML = renderTimeline(filtered);
     else if (currentView === 'grid') content.innerHTML = renderGrid(filtered);
-    else content.innerHTML = renderCompare();
+    else {
+        content.innerHTML = renderCompare();
+        requestAnimationFrame(updateColHeaderTop);
+    }
 }
 
 function renderStats(filtered) {
