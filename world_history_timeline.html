@@ -39,7 +39,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .chip-add{border-style:dashed;color:var(--muted)}
 .chip-add:hover{border-color:var(--success);color:var(--success)}
 .search-wrap{margin-left:auto;position:relative}
-.search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:180px;outline:none}
+.search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:180px;outline:none;pointer-events:auto;position:relative;z-index:31}
 .search-input:focus{border-color:var(--gold)}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
 .view-toggles{display:flex;gap:4px;margin-left:8px}
@@ -168,7 +168,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
     <div id="region-chips"></div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
-      <input class="search-input" type="text" placeholder="사건 검색..." oninput="setSearch(this.value)" />
+      <input class="search-input" type="text" placeholder="사건 검색..." oninput="setSearch(this.value)" onkeyup="setSearch(this.value)" style="pointer-events:auto;" />
     </div>
     <div class="view-toggles">
       <button class="view-btn active" id="btn-timeline" onclick="setView('timeline')" title="타임라인 뷰">≡</button>
@@ -608,7 +608,12 @@ function renderCompare() {
 
     // 각 컬럼별 이벤트 (연도순 정렬)
     const colEvents = allCols.map(name =>
-        events.filter(e => e.region === name).sort((a,b) => a.year - b.year)
+        events.filter(e => {
+            const desc = e.desc || e.description || '';
+            const regionOk = e.region === name;
+            const searchOk = !currentSearch || e.title.includes(currentSearch) || desc.includes(currentSearch);
+            return regionOk && searchOk;
+        }).sort((a,b) => a.year - b.year)
     );
 
     if (colEvents[0].length === 0) {
