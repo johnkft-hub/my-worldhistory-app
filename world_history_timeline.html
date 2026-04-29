@@ -36,6 +36,8 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .chip{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
 .chip:hover,.chip.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
 .chip.active{font-weight:500}
+.chip-add{border-style:dashed;color:var(--muted)}
+.chip-add:hover{border-color:var(--success);color:var(--success)}
 .search-wrap{margin-left:auto;position:relative}
 .search-input{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:6px 12px 6px 32px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;width:180px;outline:none}
 .search-input:focus{border-color:var(--gold)}
@@ -61,7 +63,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .event-card:hover::before{opacity:1}
 .event-desc{font-size:11px;color:var(--muted);margin-top:1px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.grid-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s}
+.grid-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
 .grid-card:hover{border-color:var(--gold-dark);transform:translateY(-3px)}
 .grid-card-title{font-size:14px;font-weight:500;margin:6px 0 4px;line-height:1.4}
 .grid-card-desc{font-size:12px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -69,47 +71,24 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-line{flex:1;height:1px;background:var(--border)}
 .era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
-/* ── 비교 뷰 (v3 완전 재설계) ── */
-.cmp-ctrl{background:var(--panel);border:1px solid var(--gold-dark);border-radius:12px;padding:16px 20px;margin-bottom:20px}
-.cmp-ctrl-title{font-size:10px;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
-.cmp-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
-.cmp-row:last-child{margin-bottom:0}
-.cmp-row-label{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:5px;min-width:80px;font-weight:600}
-.cmp-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
-.cc{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.18s;white-space:nowrap;user-select:none}
-.cc:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.06)}
-.cc.is-main{font-weight:700;box-shadow:0 0 0 1px currentColor}
-.cc.is-cmp{font-weight:500;box-shadow:0 0 0 1px currentColor}
-.cmp-hint{margin-top:10px;padding:8px 12px;border-radius:6px;background:rgba(201,168,76,0.06);border:1px dashed var(--gold-dark);font-size:11px;color:var(--muted);text-align:center;display:none}
-.cmp-hint.show{display:block}
+/* ── 비교 타임라인 뷰 ── */
+.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease}
+.compare-bar.visible{max-height:100px;padding:10px 2rem}
+.compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
+.compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
+.compare-chip.selected{font-weight:500}
+.compare-wrap{display:grid;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.compare-col{min-width:0}
+.compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:0;z-index:5}
+.compare-col-body{padding:8px;min-height:200px}
+.compare-divider{width:1px;background:var(--border)}
+.compare-event{border-radius:4px;padding:5px 8px;margin-bottom:5px;cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
+.compare-event:hover{opacity:0.85}
+.compare-event-year{font-size:9px;font-weight:600;letter-spacing:0.05em}
+.compare-event-title{font-size:11px;font-weight:500;margin-top:1px;line-height:1.3}
+.compare-spacer{height:8px}
 
-/* ── 비교 뷰 테이블 (시대 행 기준 정렬 v4) ── */
-.cmp-table{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;width:100%}
-.cmp-thead{display:grid;position:sticky;top:0;z-index:10;background:var(--panel)}
-.cmp-th-era{background:var(--surface);border-bottom:2px solid var(--border);border-right:1px solid var(--border);padding:8px 10px;font-size:10px;color:var(--muted);font-weight:700;display:flex;align-items:center;justify-content:center}
-.cmp-th-col{border-bottom:2px solid;border-right:1px solid rgba(255,255,255,0.06);padding:10px 12px;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.04em}
-.cmp-th-col:last-child{border-right:none}
-.cmp-th-col-sub{font-size:9px;font-weight:400;opacity:.65;margin-top:2px}
-.cmp-era-row{display:grid;border-bottom:1px solid var(--border)}
-.cmp-era-row:last-child{border-bottom:none}
-.cmp-era-label-cell{background:rgba(201,168,76,0.05);border-right:1px solid var(--border);padding:6px 4px;display:flex;align-items:center;justify-content:center;min-width:32px}
-.cmp-era-badge{font-size:8px;color:var(--gold-dark);font-weight:700;letter-spacing:0.06em;writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap;transform:rotate(180deg)}
-.cmp-cell{padding:6px 7px;border-right:1px solid var(--border);min-height:56px;vertical-align:top}
-.cmp-cell:last-child{border-right:none}
-.cmp-cell.no-event{background:repeating-linear-gradient(-45deg,transparent,transparent 5px,rgba(255,255,255,0.013) 5px,rgba(255,255,255,0.013) 10px)}
-.cmp-ev{border-radius:5px;padding:6px 9px;margin-bottom:5px;cursor:pointer;border-left:3px solid;transition:filter 0.15s,transform 0.15s}
-.cmp-ev:last-child{margin-bottom:0}
-.cmp-ev:hover{filter:brightness(1.2);transform:translateX(2px)}
-.cmp-ev-yr{font-size:9px;font-weight:700;letter-spacing:0.04em;margin-bottom:2px}
-.cmp-ev-tt{font-size:11px;font-weight:500;line-height:1.35}
-.cmp-ev-ds{font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
-.cmp-no-ev{padding:20px;text-align:center;font-size:11px;color:var(--muted);font-style:italic}
-
-.empty{text-align:center;padding:60px;color:var(--muted)}
-.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
-.empty-text{font-size:14px}
-
-/* 모달 */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;position:relative}
 .modal-header{padding:24px 24px 0;border-bottom:1px solid var(--border);margin-bottom:24px;padding-bottom:16px}
@@ -136,11 +115,31 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-btn{padding:8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;text-align:center}
 .era-btn.selected{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.empty{text-align:center;padding:60px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4}
+.empty-text{font-size:14px}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--surface)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
 .hidden{display:none!important}
+
+/* ── 일별 업데이트 패널 ── */
+.daily-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.daily-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.daily-panel-title{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+.daily-panel-toggle{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0;font-family:'Noto Sans KR',sans-serif;transition:color 0.2s}
+.daily-panel-toggle:hover{color:var(--gold)}
+.daily-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto}
+.daily-list.collapsed{max-height:0;overflow:hidden}
+.daily-row{display:flex;align-items:center;gap:8px;min-height:22px}
+.daily-date{font-size:11px;color:var(--muted);white-space:nowrap;width:80px;flex-shrink:0}
+.daily-bar-wrap{flex:1;background:rgba(255,255,255,0.05);border-radius:4px;height:10px;overflow:hidden;position:relative}
+.daily-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width 0.5s ease}
+.daily-count{font-size:11px;color:var(--gold);font-weight:600;width:28px;text-align:right;flex-shrink:0}
+.daily-today{color:var(--gold-light)!important;font-weight:700}
+.daily-today .daily-bar{background:linear-gradient(90deg,#C9A84C,#F0D080)}
+.daily-empty{font-size:12px;color:var(--muted);text-align:center;padding:12px}
 </style>
 </head>
 <body>
@@ -162,6 +161,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
   </div>
 </header>
 
+<!-- 일반 필터바 -->
 <div class="filterbar">
   <div class="filterbar-inner">
     <span class="filter-label">지역</span>
@@ -178,8 +178,25 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
   </div>
 </div>
 
+<!-- 비교 뷰 전용 바 (비교 지역 선택) -->
+<div class="compare-bar" id="compare-bar">
+  <div class="compare-bar-inner">
+    <span class="compare-label">🔍 비교 지역:</span>
+    <div id="compare-region-chips" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+  </div>
+</div>
+
 <div class="main">
   <div class="stats" id="stats"></div>
+  <div class="daily-panel" id="daily-panel">
+    <div class="daily-panel-header">
+      <span class="daily-panel-title">📅 일별 사건 등록 현황</span>
+      <button class="daily-panel-toggle" id="daily-toggle" onclick="toggleDailyPanel()">접기 ▲</button>
+    </div>
+    <div class="daily-list" id="daily-list">
+      <div class="daily-empty">데이터를 불러오는 중...</div>
+    </div>
+  </div>
   <div id="content"></div>
 </div>
 
@@ -240,7 +257,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       </div>
       <div class="form-section">
         <label class="form-label">중요도</label>
-        <div class="importance-select">
+        <div class="importance-select" id="importance-select">
           <button class="importance-btn" onclick="selectImportance(1)">★ 1</button>
           <button class="importance-btn" onclick="selectImportance(2)">★ 2</button>
           <button class="importance-btn selected" onclick="selectImportance(3)">★ 3</button>
@@ -269,7 +286,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
         <input class="form-input" type="text" id="r-name" placeholder="예: 동남아시아" />
       </div>
       <div class="form-section">
-        <label class="form-label">색상</label>
+        <label class="form-label">색상 (비교 뷰에서 표시)</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;" id="color-picker">
           <span data-color="#C9A84C" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#C9A84C;cursor:pointer;border:2px solid transparent;"></span>
           <span data-color="#7BA3FF" onclick="selectColor(this)" style="width:28px;height:28px;border-radius:50%;background:#7BA3FF;cursor:pointer;border:2px solid transparent;"></span>
@@ -291,454 +308,498 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 </div>
 
 <script>
-// ════════════════════════════════════════════════
-// 전역 상태
-// ════════════════════════════════════════════════
-let events   = [];
-let regions  = [];
-let currentRegion  = '전체';
-let currentSearch  = '';
-let currentView    = 'timeline';
+let events = [];
+let regions = [];
+let currentRegion = '전체';
+let currentSearch = '';
+let currentView = 'timeline';
 let selectedImportance = 3;
-let selectedEra    = 'AD';
-let editingId  = null;
-let detailId   = null;
+let selectedEra = 'AD';
+let editingId = null;
+let detailId = null;
+let mainRegion = null;
+let compareRegions = new Set();
 
-// 비교 뷰 전용 상태 (필터바와 완전 독립)
-let cmpMain = null;         // 메인 지역명 (string|null)
-let cmpSet  = new Set();    // 비교 지역 Set<string>
-
-// ════════════════════════════════════════════════
-// 유틸
-// ════════════════════════════════════════════════
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtYear(y){ return y<0?`기원전 ${Math.abs(y)}년`:y===0?'1년':`${y}년`; }
-function stars(n){ return '★'.repeat(n)+'☆'.repeat(5-n); }
-function getColor(name){ const r=regions.find(r=>r.name===name); return r?r.color:'#7BA3FF'; }
-
-// ════════════════════════════════════════════════
-// 초기화 — regions 먼저, events 나중
-// ════════════════════════════════════════════════
-async function init(){
-    await loadRegions();
-    await loadEvents();
+function escHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-async function loadRegions(){
-    try{
-        const res = await fetch('/api/regions');
-        regions = await res.json();
-    }catch(e){
-        regions=[
-            {id:1,name:'아시아',color:'#C9A84C'},{id:2,name:'유럽',color:'#7BA3FF'},
-            {id:3,name:'아프리카',color:'#5DCAA5'},{id:4,name:'아메리카',color:'#F0997B'},
-            {id:5,name:'중동',color:'#AFA9EC'},{id:6,name:'전세계',color:'#73c991'}
-        ];
+let dailyCollapsed = false;
+
+// ── 일별 통계 ──────────────────────────────────
+async function fetchDailyStats() {
+    try {
+        const res = await fetch('/api/stats/daily');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        renderDailyStats(data);
+    } catch {
+        // 로컬 fallback: events의 created_at 대신 오늘 날짜로 집계
+        renderDailyStats([]);
     }
-    // regions 로드 완료 → 기본 메인 지역 자동 설정
-    if(!cmpMain && regions.length>0) cmpMain = regions[0].name;
-
-    buildRegionChips();
-    buildRegionSelect();
 }
 
-async function loadEvents(){
-    try{
-        const res = await fetch('/api/events');
-        if(!res.ok) throw new Error();
-        events = await res.json();
-    }catch(e){
-        alert('서버 연결 오류: 백엔드가 실행 중인지 확인하세요.');
+function renderDailyStats(data) {
+    const list = document.getElementById('daily-list');
+    if (!data || data.length === 0) {
+        list.innerHTML = '<div class="daily-empty">아직 등록된 사건이 없습니다.</div>';
         return;
     }
-    render();
+    const max = Math.max(...data.map(d => d.count));
+    const today = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.\s*/g,'-').replace(/-$/,'');
+    let html = '';
+    data.forEach(row => {
+        const dateStr = String(row.day).slice(0,10); // YYYY-MM-DD
+        const parts = dateStr.split('-');
+        const label = parts.length === 3 ? `${parts[1]}/${parts[2]}` : dateStr;
+        const pct = max > 0 ? Math.round((row.count / max) * 100) : 0;
+        const isToday = dateStr === new Date().toISOString().slice(0,10);
+        html += `<div class="daily-row${isToday?' daily-today':''}">
+            <span class="daily-date">${label}${isToday?' <b style="color:var(--gold);font-size:9px;">TODAY</b>':''}</span>
+            <div class="daily-bar-wrap"><div class="daily-bar" style="width:${pct}%"></div></div>
+            <span class="daily-count">+${row.count}</span>
+        </div>`;
+    });
+    list.innerHTML = html;
 }
 
-// ════════════════════════════════════════════════
-// 필터바 UI
-// ════════════════════════════════════════════════
-function buildRegionChips(){
-    const w = document.getElementById('region-chips');
-    w.innerHTML =
-        `<button class="chip ${currentRegion==='전체'?'active':''}" onclick="setRegion('전체',this)">전체</button>` +
-        regions.map(r=>`<button class="chip ${currentRegion===r.name?'active':''}" onclick="setRegion('${r.name}',this)">${r.name}</button>`).join('');
+function toggleDailyPanel() {
+    dailyCollapsed = !dailyCollapsed;
+    document.getElementById('daily-list').classList.toggle('collapsed', dailyCollapsed);
+    document.getElementById('daily-toggle').textContent = dailyCollapsed ? '펼치기 ▼' : '접기 ▲';
 }
 
-function buildRegionSelect(){
-    const s = document.getElementById('f-region');
-    if(s) s.innerHTML = regions.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+// ── 초기 데이터 로드 ──────────────────────────
+async function init() {
+    await fetchRegions();
+    await fetchEvents();
+    await fetchDailyStats();
 }
 
-function setRegion(r, btn){
+async function fetchRegions() {
+    try {
+        const res = await fetch('/api/regions');
+        regions = await res.json();
+        renderRegionChips();
+        renderCompareRegionChips();
+        renderRegionSelect();
+    } catch (err) {
+        console.error('지역 로드 에러:', err);
+        regions = [
+            {id:1,name:'아시아',color:'#C9A84C'},
+            {id:2,name:'유럽',color:'#7BA3FF'},
+            {id:3,name:'아프리카',color:'#5DCAA5'},
+            {id:4,name:'아메리카',color:'#F0997B'},
+            {id:5,name:'중동',color:'#AFA9EC'},
+            {id:6,name:'전세계',color:'#73c991'}
+        ];
+        renderRegionChips();
+        renderCompareRegionChips();
+        renderRegionSelect();
+    }
+}
+
+async function fetchEvents() {
+    try {
+        const res = await fetch('/api/events');
+        if (!res.ok) throw new Error('로드 실패');
+        events = await res.json();
+        render();
+    } catch (err) {
+        console.error('Fetch Error:', err);
+        alert('서버 연결 오류: 백엔드 서버가 실행 중인지 확인하세요.');
+    }
+}
+
+// ── 지역 칩 렌더링 ────────────────────────────
+function renderRegionChips() {
+    const wrap = document.getElementById('region-chips');
+    let html = `<button class="chip ${currentRegion==='전체'?'active':''}" onclick="setRegion('전체',this)">전체</button>`;
+    regions.forEach(r => {
+        html += `<button class="chip ${currentRegion===r.name?'active':''}" onclick="setRegion('${r.name}',this)">${r.name}</button>`;
+    });
+    wrap.innerHTML = html;
+}
+
+function renderCompareRegionChips() {
+    const wrap = document.getElementById('compare-region-chips');
+    if (!mainRegion) { wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);">먼저 메인 지역을 선택하세요</span>'; return; }
+    let html = '';
+    regions.filter(r => r.name !== mainRegion).forEach(r => {
+        const sel = compareRegions.has(r.name);
+        html += `<button class="compare-chip ${sel?'selected':''}" 
+            style="${sel?`border-color:${r.color};color:${r.color};background:${r.color}22;`:''}"
+            onclick="toggleCompareRegion('${r.name}',this,'${r.color}')">${r.name}</button>`;
+    });
+    wrap.innerHTML = html;
+}
+
+function renderRegionSelect() {
+    const sel = document.getElementById('f-region');
+    sel.innerHTML = regions.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+}
+
+// ── 지역 관련 함수 ─────────────────────────────
+function getRegionColor(name) {
+    const r = regions.find(r => r.name === name);
+    return r ? r.color : '#7BA3FF';
+}
+
+function setRegion(r, btn) {
     currentRegion = r;
-    document.querySelectorAll('#region-chips .chip').forEach(c=>c.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    render();
-}
-function setSearch(v){ currentSearch=v; render(); }
-function setView(v){
-    currentView=v;
-    ['timeline','grid','compare'].forEach(id=>document.getElementById('btn-'+id).classList.toggle('active',id===v));
+    document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (currentView === 'compare') {
+        mainRegion = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
+        compareRegions.clear();
+        renderCompareRegionChips();
+    }
     render();
 }
 
-// ════════════════════════════════════════════════
-// 데이터 필터
-// ════════════════════════════════════════════════
-function getFiltered(){
-    return events.filter(e=>{
-        const rOk = currentRegion==='전체'||e.region===currentRegion;
-        const d   = e.desc||e.description||'';
-        const sOk = !currentSearch||e.title.includes(currentSearch)||d.includes(currentSearch)||(e.region||'').includes(currentSearch);
-        return rOk&&sOk;
-    }).sort((a,b)=>a.year-b.year);
+function toggleCompareRegion(name, btn, color) {
+    if (compareRegions.has(name)) {
+        compareRegions.delete(name);
+        btn.classList.remove('selected');
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        btn.style.background = '';
+    } else {
+        compareRegions.add(name);
+        btn.classList.add('selected');
+        btn.style.borderColor = color;
+        btn.style.color = color;
+        btn.style.background = color + '22';
+    }
+    render();
 }
 
-function getEras(list){
-    const eras=[],groups={};
-    list.forEach(e=>{
+// ── 뷰 전환 ───────────────────────────────────
+function setView(v) {
+    currentView = v;
+    ['timeline','grid','compare'].forEach(id => {
+        document.getElementById('btn-'+id).classList.toggle('active', id === v);
+    });
+    const compareBar = document.getElementById('compare-bar');
+    if (v === 'compare') {
+        compareBar.classList.add('visible');
+        // 메인 지역 자동 설정: 현재 선택된 지역 or 첫번째 지역
+        if (!mainRegion) {
+            mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
+        }
+        renderCompareRegionChips();
+    } else {
+        compareBar.classList.remove('visible');
+    }
+    render();
+}
+
+// ── 필터 ──────────────────────────────────────
+function formatYear(y) {
+    if (y < 0) return `기원전 ${Math.abs(y)}년`;
+    if (y === 0) return '1년';
+    return `${y}년`;
+}
+
+function renderStars(n) {
+    return '★'.repeat(n) + '☆'.repeat(5-n);
+}
+
+function getFiltered() {
+    return events.filter(e => {
+        const regionOk = currentRegion === '전체' || e.region === currentRegion;
+        const desc = e.desc || e.description || '';
+        const searchOk = !currentSearch || e.title.includes(currentSearch) || desc.includes(currentSearch) || (e.region||'').includes(currentSearch);
+        return regionOk && searchOk;
+    }).sort((a,b) => a.year - b.year);
+}
+
+function getEras(filtered) {
+    const eras = [], groups = {};
+    filtered.forEach(e => {
         let era;
-        if     (e.year< -500) era='고대 (기원전 500년 이전)';
-        else if(e.year<  500) era='고전기 (기원전 500년 ~ 서기 500년)';
-        else if(e.year< 1450) era='중세 (500년 ~ 1450년)';
-        else if(e.year< 1800) era='근세 (1450년 ~ 1800년)';
-        else if(e.year< 1950) era='근현대 (1800년 ~ 1950년)';
-        else                   era='현대 (1950년 이후)';
-        if(!groups[era]){groups[era]=[];eras.push(era);}
+        if (e.year < -500) era = '고대 (기원전 500년 이전)';
+        else if (e.year < 500) era = '고전기 (기원전 500년 ~ 서기 500년)';
+        else if (e.year < 1450) era = '중세 (500년 ~ 1450년)';
+        else if (e.year < 1800) era = '근세 (1450년 ~ 1800년)';
+        else if (e.year < 1950) era = '근현대 (1800년 ~ 1950년)';
+        else era = '현대 (1950년 이후)';
+        if (!groups[era]) { groups[era] = []; eras.push(era); }
         groups[era].push(e);
     });
-    return {eras,groups};
+    return {eras, groups};
 }
 
-// ════════════════════════════════════════════════
-// 렌더링 진입점
-// ════════════════════════════════════════════════
-function render(){
-    const f = getFiltered();
-    renderStats(f);
-    const el = document.getElementById('content');
-    if     (currentView==='timeline') el.innerHTML = renderTimeline(f);
-    else if(currentView==='grid')     el.innerHTML = renderGrid(f);
-    else                               el.innerHTML = renderCompare();
+function setSearch(v) { currentSearch = v; render(); }
+
+// ── 렌더링 ────────────────────────────────────
+function render() {
+    const filtered = getFiltered();
+    renderStats(filtered);
+    const content = document.getElementById('content');
+    if (currentView === 'timeline') content.innerHTML = renderTimeline(filtered);
+    else if (currentView === 'grid') content.innerHTML = renderGrid(filtered);
+    else content.innerHTML = renderCompare();
 }
 
-function renderStats(f){
-    const rc=[...new Set(f.map(e=>e.region))].length;
-    const avg=f.length?(f.reduce((s,e)=>s+e.importance,0)/f.length).toFixed(1):0;
-    document.getElementById('stats').innerHTML=`
-      <div class="stat-card"><div class="stat-num">${f.length}</div><div class="stat-lbl">총 사건 수</div></div>
-      <div class="stat-card"><div class="stat-num">${rc}</div><div class="stat-lbl">관련 지역</div></div>
-      <div class="stat-card"><div class="stat-num">${f.length?fmtYear(f[0].year):'—'}</div><div class="stat-lbl">최초 연도</div></div>
-      <div class="stat-card"><div class="stat-num">${avg}</div><div class="stat-lbl">평균 중요도</div></div>`;
+function renderStats(filtered) {
+    const regionCount = [...new Set(filtered.map(e => e.region))].length;
+    const avg = filtered.length ? (filtered.reduce((s,e) => s+e.importance,0)/filtered.length).toFixed(1) : 0;
+    document.getElementById('stats').innerHTML = `
+        <div class="stat-card"><div class="stat-num">${filtered.length}</div><div class="stat-lbl">총 사건 수</div></div>
+        <div class="stat-card"><div class="stat-num">${regionCount}</div><div class="stat-lbl">관련 지역</div></div>
+        <div class="stat-card"><div class="stat-num">${filtered.length ? formatYear(filtered[0].year) : '—'}</div><div class="stat-lbl">최초 연도</div></div>
+        <div class="stat-card"><div class="stat-num">${avg}</div><div class="stat-lbl">평균 중요도</div></div>`;
 }
 
-// ════════════════════════════════════════════════
-// 타임라인
-// ════════════════════════════════════════════════
-function card(e){
-    const d=esc(e.desc||e.description||''), c=getColor(e.region);
+function renderCard(e) {
+    const desc = escHtml(e.desc || e.description || '');
+    const color = getRegionColor(e.region);
     return `<div class="event-card" onclick="showDetail(${e.id})">
         <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:nowrap;">
-            <span style="font-size:10px;color:${c};font-weight:600;white-space:nowrap;">${fmtYear(e.year)}</span>
-            <span style="background:${c}22;color:${c};border-radius:4px;padding:1px 5px;font-size:10px;">${esc(e.region)}</span>
-            <span style="font-size:9px;color:${c};letter-spacing:-1px;">${stars(e.importance)}</span>
+            <span style="font-size:10px;color:${color};font-weight:600;white-space:nowrap;">${formatYear(e.year)}</span>
+            <span style="background:${color}22;color:${color};border-radius:4px;padding:1px 5px;font-size:10px;white-space:nowrap;">${escHtml(e.region)}</span>
+            <span style="font-size:9px;color:${color};letter-spacing:-1px;">${renderStars(e.importance)}</span>
         </div>
-        <div style="font-size:13px;font-weight:500;margin-bottom:1px;line-height:1.3;">${esc(e.title)}</div>
-        <div class="event-desc">${d}</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px;line-height:1.3;">${escHtml(e.title)}</div>
+        <div class="event-desc">${desc}</div>
     </div>`;
 }
-function renderTimeline(f){
-    if(!f.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
-    const {eras,groups}=getEras(f);
-    let h='<div class="timeline-wrap"><div class="timeline-axis"></div>';
-    let i=0;
-    eras.forEach(era=>{
-        h+=`<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
-        groups[era].forEach(e=>{
-            const s=i%2===0?'':'right';
-            h+=`<div class="timeline-item ${s}">
-                <div class="timeline-side">${s?'':card(e)}</div>
+
+function renderTimeline(filtered) {
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
+    const {eras, groups} = getEras(filtered);
+    let html = '<div class="timeline-wrap"><div class="timeline-axis"></div>';
+    let idx = 0;
+    eras.forEach(era => {
+        html += `<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
+        groups[era].forEach(e => {
+            const side = idx % 2 === 0 ? '' : 'right';
+            html += `<div class="timeline-item ${side}">
+                <div class="timeline-side">${side ? '' : renderCard(e)}</div>
                 <div class="timeline-dot" onclick="showDetail(${e.id})"></div>
-                <div class="timeline-side">${s?card(e):''}</div>
+                <div class="timeline-side">${side ? renderCard(e) : ''}</div>
             </div>`;
-            i++;
+            idx++;
         });
     });
-    return h+'</div>';
+    return html + '</div>';
 }
 
-// ════════════════════════════════════════════════
-// 그리드
-// ════════════════════════════════════════════════
-function renderGrid(f){
-    if(!f.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
-    const {eras,groups}=getEras(f);
-    let h='';
-    eras.forEach(era=>{
-        h+=`<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div><div class="card-grid">`;
-        groups[era].forEach(e=>{
-            const d=esc(e.desc||e.description||''),c=getColor(e.region);
-            h+=`<div class="grid-card" onclick="showDetail(${e.id})">
+function renderGrid(filtered) {
+    if (!filtered.length) return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">사건이 없습니다.</div></div>`;
+    const {eras, groups} = getEras(filtered);
+    let html = '';
+    eras.forEach(era => {
+        html += `<div class="era-divider"><div class="era-line"></div><div class="era-label">${era}</div><div class="era-line"></div></div>`;
+        html += '<div class="card-grid">';
+        groups[era].forEach(e => {
+            const desc = escHtml(e.desc || e.description || '');
+            const color = getRegionColor(e.region);
+            const yrLabel = e.year < 0 ? `기원전 ${Math.abs(e.year)}년` : `${e.year}년`;
+            const stars = renderStars(e.importance);
+            html += `<div class="grid-card" onclick="showDetail(${e.id})">
                 <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:nowrap;">
-                    <span style="font-size:10px;color:${c};font-weight:600;white-space:nowrap;">${fmtYear(e.year)}</span>
-                    <span style="background:${c}22;color:${c};border-radius:4px;padding:1px 5px;font-size:10px;">${esc(e.region)}</span>
-                    <span style="font-size:9px;color:${c};letter-spacing:-1px;">${stars(e.importance)}</span>
+                    <span style="font-size:10px;color:${color};font-weight:600;white-space:nowrap;">${yrLabel}</span>
+                    <span style="background:${color}22;color:${color};border-radius:4px;padding:1px 5px;font-size:10px;">${escHtml(e.region)}</span>
+                    <span style="font-size:9px;color:${color};letter-spacing:-1px;">${stars}</span>
                 </div>
-                <div class="grid-card-title">${esc(e.title)}</div>
-                <div class="grid-card-desc">${d}</div>
+                <div class="grid-card-title">${escHtml(e.title)}</div>
+                <div class="grid-card-desc">${desc}</div>
             </div>`;
         });
-        h+='</div>';
+        html += '</div>';
     });
-    return h;
+    return html;
 }
 
-// ════════════════════════════════════════════════
-// 비교 뷰 — v4 (시대 행 기준 시각적 정렬)
-// ════════════════════════════════════════════════
-function renderCompare(){
-    if(!regions.length) return `<div class="empty"><div class="empty-icon">⏳</div><div class="empty-text">지역 로딩 중...</div></div>`;
-
-    /* ① 메인 지역 칩 */
-    const mainChips = regions.map(r=>{
-        const on=cmpMain===r.name;
-        const s=on?`border-color:${r.color};color:${r.color};background:${r.color}28;`:'';
-        return `<button class="cc ${on?'is-main':''}" style="${s}" onclick="setCmpMain('${r.name}')">${on?'⭐ ':''} ${r.name}</button>`;
-    }).join('');
-
-    /* ② 비교 지역 칩 */
-    const others=regions.filter(r=>r.name!==cmpMain);
-    const cmpChips=others.length
-        ? others.map(r=>{
-            const on=cmpSet.has(r.name);
-            const s=on?`border-color:${r.color};color:${r.color};background:${r.color}28;`:'';
-            return `<button class="cc ${on?'is-cmp':''}" style="${s}" onclick="toggleCmp('${r.name}')">${on?'✓ ':'+ '}${r.name}</button>`;
-          }).join('')
-        : '<span style="font-size:11px;color:var(--muted);">비교할 다른 지역 없음</span>';
-
-    const hint=(cmpMain&&cmpSet.size===0)
-        ? `<div class="cmp-hint show">📊 위에서 비교할 지역을 하나 이상 선택하면 시대별로 나란히 비교됩니다</div>`
-        : '';
-
-    /* ③ 시대 행 기준 테이블 */
-    let table='';
-    if(!cmpMain){
-        table=`<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">메인 지역을 선택하세요</div></div>`;
-    } else {
-        const cols=[cmpMain,...cmpSet];
-        const colColors=cols.map(n=>getColor(n));
-
-        // 각 컬럼별 사건 목록 (연도순)
-        const colEvMap={};
-        cols.forEach(name=>{
-            colEvMap[name]=events.filter(e=>e.region===name).sort((a,b)=>a.year-b.year);
-        });
-
-        // 전체 사건으로 시대 구간 계산
-        const allEvs=[...cols.flatMap(n=>colEvMap[n])];
-        if(!allEvs.length){
-            table=`<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">선택된 지역에 사건이 없습니다</div></div>`;
-        } else {
-            // 시대 정의 (경계값, 레이블, 약칭)
-            const ERAS=[
-                {min:-Infinity, max:-500,  label:'고대',   sub:'~기원전 500년'},
-                {min:-500,      max:500,   label:'고전기', sub:'기원전 500년~서기 500년'},
-                {min:500,       max:1450,  label:'중세',   sub:'500~1450년'},
-                {min:1450,      max:1800,  label:'근세',   sub:'1450~1800년'},
-                {min:1800,      max:1950,  label:'근현대', sub:'1800~1950년'},
-                {min:1950,      max:Infinity, label:'현대',sub:'1950년 이후'},
-            ];
-
-            // 실제 사건이 있는 시대만 추출
-            const activeEras=ERAS.filter(era=>
-                allEvs.some(e=>e.year>=era.min && e.year<era.max)
-            );
-
-            // grid-template-columns: 시대레이블(32px) + 지역컬럼들(1fr)
-            const gridCols=`32px ${cols.map(()=>'1fr').join(' ')}`;
-
-            // 헤더행
-            let theadHtml=`<div class="cmp-thead" style="grid-template-columns:${gridCols};">
-                <div class="cmp-th-era">시대</div>`;
-            cols.forEach((name,ci)=>{
-                const color=colColors[ci];
-                const isMain=ci===0;
-                theadHtml+=`<div class="cmp-th-col"
-                    style="color:${color};background:${color}18;border-bottom-color:${color};">
-                    ${esc(name)}${isMain?' ⭐':''}
-                    <div class="cmp-th-col-sub">${colEvMap[name].length}개 사건</div>
-                </div>`;
-            });
-            theadHtml+='</div>';
-
-            // 시대별 행
-            let rowsHtml='';
-            activeEras.forEach((era,ei)=>{
-                rowsHtml+=`<div class="cmp-era-row" style="grid-template-columns:${gridCols};">`;
-
-                // 시대 레이블 셀 (세로 텍스트)
-                rowsHtml+=`<div class="cmp-era-label-cell">
-                    <span class="cmp-era-badge">${era.label}</span>
-                </div>`;
-
-                // 각 지역 셀
-                cols.forEach((name,ci)=>{
-                    const color=colColors[ci];
-                    const isMain=ci===0;
-                    const evsInEra=colEvMap[name].filter(e=>e.year>=era.min && e.year<era.max);
-                    const bg=isMain?'rgba(201,168,76,0.03)':'';
-
-                    if(!evsInEra.length){
-                        // 사건 없는 셀 — 사선 패턴
-                        rowsHtml+=`<div class="cmp-cell no-event" style="${bg?'background:'+bg:''};"></div>`;
-                    } else {
-                        let cellHtml='';
-                        evsInEra.forEach(e=>{
-                            const d=esc(e.desc||e.description||'');
-                            const yr=e.year<0?`BC ${Math.abs(e.year)}`:`${e.year}`;
-                            cellHtml+=`<div class="cmp-ev" onclick="showDetail(${e.id})"
-                                style="background:${color}18;border-left-color:${color};">
-                                <div class="cmp-ev-yr" style="color:${color};">${yr}년</div>
-                                <div class="cmp-ev-tt">${esc(e.title)}</div>
-                                ${d?`<div class="cmp-ev-ds">${d}</div>`:''}
-                            </div>`;
-                        });
-                        rowsHtml+=`<div class="cmp-cell" style="${bg?'background:'+bg:''}">${cellHtml}</div>`;
-                    }
-                });
-
-                rowsHtml+='</div>';
-            });
-
-            table=`<div class="cmp-table">${theadHtml}${rowsHtml}</div>`;
-        }
+// ── 비교 타임라인 렌더링 ──────────────────────
+function renderCompare() {
+    if (!mainRegion) {
+        return `<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">위 필터바에서 메인으로 볼 지역을 선택하세요</div></div>`;
     }
 
-    return `
-    <div class="cmp-ctrl">
-        <div class="cmp-ctrl-title">⚖️ 지역 비교 타임라인 — 시대별 정렬</div>
-        <div class="cmp-row">
-            <div class="cmp-row-label">🗺 메인 지역</div>
-            <div class="cmp-chips">${mainChips}</div>
-        </div>
-        <div class="cmp-row">
-            <div class="cmp-row-label">📊 비교 지역</div>
-            <div class="cmp-chips">${cmpChips}</div>
-        </div>
-        ${hint}
-    </div>
-    ${table}`;
+    const allCols = [mainRegion, ...compareRegions];
+    const colColors = allCols.map(name => getRegionColor(name));
+
+    // 각 컬럼별 이벤트
+    const colEvents = allCols.map(name =>
+        events.filter(e => e.region === name).sort((a,b) => a.year - b.year)
+    );
+
+    if (colEvents[0].length === 0) {
+        return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.</div></div>`;
+    }
+
+    // 메인 지역 연도 기준으로 전체 연도 범위 설정
+    const allYears = colEvents.flat().map(e => e.year);
+    const minYear = Math.min(...allYears);
+    const maxYear = Math.max(...allYears);
+
+    // 컬럼 수에 따라 그리드 설정
+    const colCount = allCols.length;
+    const gridTemplate = Array(colCount).fill('1fr').join(' 1px ');
+
+    let html = `<div class="compare-wrap" style="grid-template-columns:${gridTemplate};">`;
+
+    allCols.forEach((name, ci) => {
+        const color = colColors[ci];
+        const isMain = ci === 0;
+        html += `<div class="compare-col" style="background:${isMain ? 'rgba(201,168,76,0.04)' : 'var(--surface)'};">
+            <div class="compare-col-header" style="color:${color};background:${color}18;border-bottom-color:${color}44;">
+                ${name}${isMain ? ' ★ 메인' : ''}
+            </div>
+            <div class="compare-col-body">`;
+
+        colEvents[ci].forEach(e => {
+            const desc = escHtml(e.desc || e.description || '');
+            const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
+            html += `<div class="compare-event" onclick="showDetail(${e.id})"
+                style="background:${color}15;border-left-color:${color};">
+                <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
+                <div class="compare-event-title">${escHtml(e.title)}</div>
+                ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">${desc}</div>` : ''}
+            </div>`;
+        });
+
+        html += `</div></div>`;
+        if (ci < colCount - 1) html += `<div class="compare-divider"></div>`;
+    });
+
+    html += '</div>';
+
+    if (compareRegions.size === 0) {
+        html += `<div style="text-align:center;padding:16px;font-size:12px;color:var(--muted);">위 비교 지역 선택 바에서 비교할 지역을 추가하세요</div>`;
+    }
+
+    return html;
 }
 
-/* 비교 뷰 인터랙션 */
-function setCmpMain(name){
-    cmpMain = name;
-    cmpSet.delete(name);   // 메인=비교 중복 방지
-    render();
-}
-function toggleCmp(name){
-    cmpSet.has(name) ? cmpSet.delete(name) : cmpSet.add(name);
-    render();
-}
-
-// ════════════════════════════════════════════════
-// 상세 모달
-// ════════════════════════════════════════════════
-function showDetail(id){
-    const e=events.find(x=>x.id==id); if(!e)return;
-    detailId=id;
-    document.getElementById('d-year').textContent=fmtYear(e.year);
-    document.getElementById('d-title').textContent=e.title;
-    document.getElementById('d-region').textContent=e.region;
-    document.getElementById('d-importance').innerHTML=stars(e.importance);
-    document.getElementById('d-desc').textContent=e.desc||e.description||'';
+// ── 상세 / 삭제 / 수정 ────────────────────────
+function showDetail(id) {
+    const e = events.find(x => x.id == id);
+    if (!e) return;
+    detailId = id;
+    document.getElementById('d-year').textContent = formatYear(e.year);
+    document.getElementById('d-title').textContent = e.title;
+    document.getElementById('d-region').textContent = e.region;
+    document.getElementById('d-importance').innerHTML = renderStars(e.importance);
+    document.getElementById('d-desc').textContent = e.desc || e.description || '';
     document.getElementById('detail-modal').classList.remove('hidden');
 }
-async function deleteEvent(){
-    if(!detailId||!confirm('정말 삭제하시겠습니까?'))return;
-    try{
-        const r=await fetch(`/api/events/${detailId}`,{method:'DELETE'});
-        if(r.ok){closeModal('detail-modal');await loadEvents();}
-        else{const d=await r.json();alert('삭제 실패: '+(d.error||'오류'));}
-    }catch{alert('서버 오류');}
-}
-function editFromDetail(){ closeModal('detail-modal'); openAddModal(detailId); }
 
-// ════════════════════════════════════════════════
-// 사건 추가/수정
-// ════════════════════════════════════════════════
-function openAddModal(id){
-    editingId=id||null;
-    if(id){
-        const e=events.find(x=>x.id==id);
-        document.getElementById('form-modal-title').textContent='사건 수정';
-        document.getElementById('f-year').value=Math.abs(e.year);
-        document.getElementById('f-title').value=e.title;
-        document.getElementById('f-region').value=e.region;
-        document.getElementById('f-desc').value=e.desc||e.description||'';
-        selectedImportance=e.importance; selectedEra=e.year<0?'BC':'AD';
+async function deleteEvent() {
+    if (!detailId) return;
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    try {
+        const res = await fetch(`/api/events/${detailId}`, { method: 'DELETE' });
+        if (res.ok) { closeModal('detail-modal'); await fetchEvents(); await fetchDailyStats(); }
+        else { const d = await res.json(); alert('삭제 실패: ' + (d.error||'오류')); }
+    } catch (err) { alert('서버 오류가 발생했습니다.'); }
+}
+
+function editFromDetail() {
+    closeModal('detail-modal');
+    openAddModal(detailId);
+}
+
+// ── 사건 추가/수정 모달 ───────────────────────
+function openAddModal(id) {
+    editingId = id || null;
+    if (id) {
+        const e = events.find(x => x.id == id);
+        document.getElementById('form-modal-title').textContent = '사건 수정';
+        document.getElementById('f-year').value = Math.abs(e.year);
+        document.getElementById('f-title').value = e.title;
+        document.getElementById('f-region').value = e.region;
+        document.getElementById('f-desc').value = e.desc || e.description || '';
+        selectedImportance = e.importance;
+        selectedEra = e.year < 0 ? 'BC' : 'AD';
     } else {
-        document.getElementById('form-modal-title').textContent='새 역사적 사건 추가';
-        ['f-year','f-title','f-desc'].forEach(i=>document.getElementById(i).value='');
-        selectedImportance=3; selectedEra='AD';
+        document.getElementById('form-modal-title').textContent = '새 역사적 사건 추가';
+        document.getElementById('f-year').value = '';
+        document.getElementById('f-title').value = '';
+        document.getElementById('f-desc').value = '';
+        selectedImportance = 3;
+        selectedEra = 'AD';
     }
-    updateImportanceUI(); updateEraUI();
+    updateImportanceUI();
+    updateEraUI();
     document.getElementById('add-modal').classList.remove('hidden');
 }
-async function saveEvent(){
-    const yr=document.getElementById('f-year').value;
-    const tt=document.getElementById('f-title').value.trim();
-    const rg=document.getElementById('f-region').value;
-    const ds=document.getElementById('f-desc').value.trim();
-    if(!yr||!tt){alert('연도와 사건명은 필수입니다.');return;}
-    const year=selectedEra==='BC'?-Math.abs(parseInt(yr)):Math.abs(parseInt(yr));
-    try{
-        const url=editingId?`/api/events/${editingId}`:'/api/events';
-        const res=await fetch(url,{method:editingId?'PUT':'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({year,title:tt,region:rg,desc:ds,importance:selectedImportance})});
-        if(res.ok){closeModal('add-modal');await loadEvents();}
-        else{const d=await res.json();alert('저장 실패: '+(d.error||d.message||'오류'));}
-    }catch{alert('서버 전송 오류');}
+
+async function saveEvent() {
+    const yrInput = document.getElementById('f-year').value;
+    const title = document.getElementById('f-title').value.trim();
+    const region = document.getElementById('f-region').value;
+    const desc = document.getElementById('f-desc').value.trim();
+    if (!yrInput || !title) { alert('연도와 사건명은 필수입니다.'); return; }
+    const year = selectedEra === 'BC' ? -Math.abs(parseInt(yrInput)) : Math.abs(parseInt(yrInput));
+    const eventData = { year, title, region, desc, importance: selectedImportance };
+    try {
+        const url = editingId ? `/api/events/${editingId}` : '/api/events';
+        const method = editingId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(eventData) });
+        if (res.ok) { closeModal('add-modal'); await fetchEvents(); await fetchDailyStats(); }
+        else { const d = await res.json(); alert('저장 실패: ' + (d.error || d.message || '오류')); }
+    } catch (err) { alert('서버 전송 오류가 발생했습니다.'); }
 }
 
-// ════════════════════════════════════════════════
-// 지역 추가
-// ════════════════════════════════════════════════
-let selectedColor='#7BA3FF';
-function openAddRegionModal(){
-    document.getElementById('r-name').value='';
-    selectedColor='#7BA3FF';
-    document.querySelectorAll('#color-picker span').forEach(s=>s.style.border=s.dataset.color===selectedColor?'2px solid white':'2px solid transparent');
+// ── 지역 추가 모달 ─────────────────────────────
+let selectedColor = '#7BA3FF';
+
+function openAddRegionModal() {
+    document.getElementById('r-name').value = '';
+    selectedColor = '#7BA3FF';
+    document.querySelectorAll('#color-picker span').forEach(s => {
+        s.style.border = s.dataset.color === selectedColor ? '2px solid white' : '2px solid transparent';
+    });
     document.getElementById('add-region-modal').classList.remove('hidden');
 }
-function selectColor(el){
-    selectedColor=el.dataset.color;
-    document.querySelectorAll('#color-picker span').forEach(s=>s.style.border=s.dataset.color===selectedColor?'2px solid white':'2px solid transparent');
-}
-async function saveRegion(){
-    const name=document.getElementById('r-name').value.trim();
-    if(!name){alert('지역명을 입력하세요.');return;}
-    try{
-        const res=await fetch('/api/regions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,color:selectedColor})});
-        if(res.ok){closeModal('add-region-modal');await loadRegions();render();alert(`'${name}' 지역이 추가됐습니다!`);}
-        else{const d=await res.json();alert('추가 실패: '+(d.error||'오류'));}
-    }catch{alert('서버 오류');}
+
+function selectColor(el) {
+    selectedColor = el.dataset.color;
+    document.querySelectorAll('#color-picker span').forEach(s => {
+        s.style.border = s.dataset.color === selectedColor ? '2px solid white' : '2px solid transparent';
+    });
 }
 
-// ════════════════════════════════════════════════
-// UI 헬퍼
-// ════════════════════════════════════════════════
-function selectImportance(n){selectedImportance=n;updateImportanceUI();}
-function updateImportanceUI(){document.querySelectorAll('.importance-btn').forEach((b,i)=>b.classList.toggle('selected',i+1===selectedImportance));}
-function selectEra(era){selectedEra=era;updateEraUI();}
-function updateEraUI(){
-    document.getElementById('era-ad').classList.toggle('selected',selectedEra==='AD');
-    document.getElementById('era-bc').classList.toggle('selected',selectedEra==='BC');
+async function saveRegion() {
+    const name = document.getElementById('r-name').value.trim();
+    if (!name) { alert('지역명을 입력하세요.'); return; }
+    try {
+        const res = await fetch('/api/regions', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ name, color: selectedColor })
+        });
+        if (res.ok) {
+            closeModal('add-region-modal');
+            await fetchRegions();
+            alert(`'${name}' 지역이 추가됐습니다!`);
+        } else {
+            const d = await res.json();
+            alert('추가 실패: ' + (d.error || '오류'));
+        }
+    } catch (err) { alert('서버 오류가 발생했습니다.'); }
 }
-function closeModal(id){document.getElementById(id).classList.add('hidden');}
-document.addEventListener('click',e=>{
-    if(e.target.classList.contains('modal-overlay'))
-        document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.add('hidden'));
+
+// ── UI 헬퍼 ───────────────────────────────────
+function selectImportance(n) { selectedImportance = n; updateImportanceUI(); }
+function updateImportanceUI() {
+    document.querySelectorAll('.importance-btn').forEach((b,i) => b.classList.toggle('selected', i+1===selectedImportance));
+}
+function selectEra(era) { selectedEra = era; updateEraUI(); }
+function updateEraUI() {
+    document.getElementById('era-ad').classList.toggle('selected', selectedEra==='AD');
+    document.getElementById('era-bc').classList.toggle('selected', selectedEra==='BC');
+}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+document.addEventListener('click', e => {
+    if (e.target.classList.contains('modal-overlay')) {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    }
 });
 
 init();

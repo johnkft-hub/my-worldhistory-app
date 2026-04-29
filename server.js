@@ -145,6 +145,24 @@ app.put('/api/events/:id', async (req, res) => {
     }
 });
 
+// 일별 업데이트 통계
+app.get('/api/stats/daily', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                DATE(created_at AT TIME ZONE 'Asia/Seoul') AS day,
+                COUNT(*)::int AS count
+            FROM events
+            GROUP BY DATE(created_at AT TIME ZONE 'Asia/Seoul')
+            ORDER BY day DESC
+            LIMIT 30
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // 이벤트 삭제
 app.delete('/api/events/:id', async (req, res) => {
     try {
