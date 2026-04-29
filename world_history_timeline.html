@@ -78,7 +78,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
 .compare-chip.selected{font-weight:500}
-.compare-wrap{display:grid;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.compare-wrap{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .compare-col{min-width:0}
 .compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:0;z-index:5}
 .compare-col-body{padding:8px;min-height:200px}
@@ -123,23 +123,6 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
 .hidden{display:none!important}
-
-/* ── 일별 업데이트 패널 ── */
-.daily-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:20px}
-.daily-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.daily-panel-title{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
-.daily-panel-toggle{font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0;font-family:'Noto Sans KR',sans-serif;transition:color 0.2s}
-.daily-panel-toggle:hover{color:var(--gold)}
-.daily-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto}
-.daily-list.collapsed{max-height:0;overflow:hidden}
-.daily-row{display:flex;align-items:center;gap:8px;min-height:22px}
-.daily-date{font-size:11px;color:var(--muted);white-space:nowrap;width:80px;flex-shrink:0}
-.daily-bar-wrap{flex:1;background:rgba(255,255,255,0.05);border-radius:4px;height:10px;overflow:hidden;position:relative}
-.daily-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width 0.5s ease}
-.daily-count{font-size:11px;color:var(--gold);font-weight:600;width:28px;text-align:right;flex-shrink:0}
-.daily-today{color:var(--gold-light)!important;font-weight:700}
-.daily-today .daily-bar{background:linear-gradient(90deg,#C9A84C,#F0D080)}
-.daily-empty{font-size:12px;color:var(--muted);text-align:center;padding:12px}
 </style>
 </head>
 <body>
@@ -188,15 +171,6 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 
 <div class="main">
   <div class="stats" id="stats"></div>
-  <div class="daily-panel" id="daily-panel">
-    <div class="daily-panel-header">
-      <span class="daily-panel-title">📅 일별 사건 등록 현황</span>
-      <button class="daily-panel-toggle" id="daily-toggle" onclick="toggleDailyPanel()">접기 ▲</button>
-    </div>
-    <div class="daily-list" id="daily-list">
-      <div class="daily-empty">데이터를 불러오는 중...</div>
-    </div>
-  </div>
   <div id="content"></div>
 </div>
 
@@ -324,56 +298,10 @@ function escHtml(str) {
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-let dailyCollapsed = false;
-
-// ── 일별 통계 ──────────────────────────────────
-async function fetchDailyStats() {
-    try {
-        const res = await fetch('/api/stats/daily');
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        renderDailyStats(data);
-    } catch {
-        // 로컬 fallback: events의 created_at 대신 오늘 날짜로 집계
-        renderDailyStats([]);
-    }
-}
-
-function renderDailyStats(data) {
-    const list = document.getElementById('daily-list');
-    if (!data || data.length === 0) {
-        list.innerHTML = '<div class="daily-empty">아직 등록된 사건이 없습니다.</div>';
-        return;
-    }
-    const max = Math.max(...data.map(d => d.count));
-    const today = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.\s*/g,'-').replace(/-$/,'');
-    let html = '';
-    data.forEach(row => {
-        const dateStr = String(row.day).slice(0,10); // YYYY-MM-DD
-        const parts = dateStr.split('-');
-        const label = parts.length === 3 ? `${parts[1]}/${parts[2]}` : dateStr;
-        const pct = max > 0 ? Math.round((row.count / max) * 100) : 0;
-        const isToday = dateStr === new Date().toISOString().slice(0,10);
-        html += `<div class="daily-row${isToday?' daily-today':''}">
-            <span class="daily-date">${label}${isToday?' <b style="color:var(--gold);font-size:9px;">TODAY</b>':''}</span>
-            <div class="daily-bar-wrap"><div class="daily-bar" style="width:${pct}%"></div></div>
-            <span class="daily-count">+${row.count}</span>
-        </div>`;
-    });
-    list.innerHTML = html;
-}
-
-function toggleDailyPanel() {
-    dailyCollapsed = !dailyCollapsed;
-    document.getElementById('daily-list').classList.toggle('collapsed', dailyCollapsed);
-    document.getElementById('daily-toggle').textContent = dailyCollapsed ? '펼치기 ▼' : '접기 ▲';
-}
-
 // ── 초기 데이터 로드 ──────────────────────────
 async function init() {
     await fetchRegions();
     await fetchEvents();
-    await fetchDailyStats();
 }
 
 async function fetchRegions() {
@@ -545,8 +473,16 @@ function render() {
 function renderStats(filtered) {
     const regionCount = [...new Set(filtered.map(e => e.region))].length;
     const avg = filtered.length ? (filtered.reduce((s,e) => s+e.importance,0)/filtered.length).toFixed(1) : 0;
+    const today = new Date();
+    const todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
+    const todayCount = events.filter(e => {
+        if (!e.created_at) return false;
+        const d = new Date(e.created_at);
+        return d.getFullYear() === todayY && d.getMonth() === todayM && d.getDate() === todayD;
+    }).length;
     document.getElementById('stats').innerHTML = `
         <div class="stat-card"><div class="stat-num">${filtered.length}</div><div class="stat-lbl">총 사건 수</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--success);">${todayCount}</div><div class="stat-lbl">오늘 등록 사건</div></div>
         <div class="stat-card"><div class="stat-num">${regionCount}</div><div class="stat-lbl">관련 지역</div></div>
         <div class="stat-card"><div class="stat-num">${filtered.length ? formatYear(filtered[0].year) : '—'}</div><div class="stat-lbl">최초 연도</div></div>
         <div class="stat-card"><div class="stat-num">${avg}</div><div class="stat-lbl">평균 중요도</div></div>`;
@@ -622,7 +558,7 @@ function renderCompare() {
     const allCols = [mainRegion, ...compareRegions];
     const colColors = allCols.map(name => getRegionColor(name));
 
-    // 각 컬럼별 이벤트
+    // 각 컬럼별 이벤트 (연도순 정렬)
     const colEvents = allCols.map(name =>
         events.filter(e => e.region === name).sort((a,b) => a.year - b.year)
     );
@@ -631,22 +567,16 @@ function renderCompare() {
         return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.</div></div>`;
     }
 
-    // 메인 지역 연도 기준으로 전체 연도 범위 설정
-    const allYears = colEvents.flat().map(e => e.year);
-    const minYear = Math.min(...allYears);
-    const maxYear = Math.max(...allYears);
-
-    // 컬럼 수에 따라 그리드 설정
-    const colCount = allCols.length;
-    const gridTemplate = Array(colCount).fill('1fr').join(' 1px ');
-
-    let html = `<div class="compare-wrap" style="grid-template-columns:${gridTemplate};">`;
+    // flex 레이아웃으로 컬럼 구성 (grid 구분선 버그 수정)
+    let html = `<div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;">`;
 
     allCols.forEach((name, ci) => {
         const color = colColors[ci];
         const isMain = ci === 0;
-        html += `<div class="compare-col" style="background:${isMain ? 'rgba(201,168,76,0.04)' : 'var(--surface)'};">
-            <div class="compare-col-header" style="color:${color};background:${color}18;border-bottom-color:${color}44;">
+        const borderLeft = ci > 0 ? `border-left:1px solid var(--border);` : '';
+
+        html += `<div style="flex:1;min-width:0;${borderLeft}background:${isMain ? 'rgba(201,168,76,0.04)' : 'var(--surface)'};">
+            <div class="compare-col-header" style="color:${color};background:${color}18;border-bottom:1px solid ${color}44;">
                 ${name}${isMain ? ' ★ 메인' : ''}
             </div>
             <div class="compare-col-body">`;
@@ -655,7 +585,7 @@ function renderCompare() {
             const desc = escHtml(e.desc || e.description || '');
             const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
             html += `<div class="compare-event" onclick="showDetail(${e.id})"
-                style="background:${color}15;border-left-color:${color};">
+                style="background:${color}15;border-left:3px solid ${color};">
                 <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
                 <div class="compare-event-title">${escHtml(e.title)}</div>
                 ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;">${desc}</div>` : ''}
@@ -663,7 +593,6 @@ function renderCompare() {
         });
 
         html += `</div></div>`;
-        if (ci < colCount - 1) html += `<div class="compare-divider"></div>`;
     });
 
     html += '</div>';
@@ -693,7 +622,7 @@ async function deleteEvent() {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     try {
         const res = await fetch(`/api/events/${detailId}`, { method: 'DELETE' });
-        if (res.ok) { closeModal('detail-modal'); await fetchEvents(); await fetchDailyStats(); }
+        if (res.ok) { closeModal('detail-modal'); await fetchEvents(); }
         else { const d = await res.json(); alert('삭제 실패: ' + (d.error||'오류')); }
     } catch (err) { alert('서버 오류가 발생했습니다.'); }
 }
@@ -740,7 +669,7 @@ async function saveEvent() {
         const url = editingId ? `/api/events/${editingId}` : '/api/events';
         const method = editingId ? 'PUT' : 'POST';
         const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(eventData) });
-        if (res.ok) { closeModal('add-modal'); await fetchEvents(); await fetchDailyStats(); }
+        if (res.ok) { closeModal('add-modal'); await fetchEvents(); }
         else { const d = await res.json(); alert('저장 실패: ' + (d.error || d.message || '오류')); }
     } catch (err) { alert('서버 전송 오류가 발생했습니다.'); }
 }
