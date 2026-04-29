@@ -72,8 +72,9 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .era-label{font-family:'Noto Serif KR',serif;font-size:12px;color:var(--gold-dark);letter-spacing:0.2em;white-space:nowrap}
 
 /* ── 비교 타임라인 뷰 ── */
-.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease}
-.compare-bar.visible{max-height:100px;padding:10px 2rem}
+.compare-bar{background:rgba(20,20,50,0.98);border-bottom:2px solid var(--gold-dark);padding:0 2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s ease}
+.compare-bar.visible{max-height:120px;padding:10px 2rem}
+.compare-main-hint{font-size:11px;color:var(--gold);background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;padding:4px 10px;}
 .compare-bar-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
@@ -164,7 +165,9 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 <!-- 비교 뷰 전용 바 (비교 지역 선택) -->
 <div class="compare-bar" id="compare-bar">
   <div class="compare-bar-inner">
-    <span class="compare-label">🔍 비교 지역:</span>
+    <span class="compare-label">🗺 메인:</span>
+    <div id="compare-main-chips" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    <span class="compare-label" style="margin-left:12px;">📊 비교:</span>
     <div id="compare-region-chips" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
   </div>
 </div>
@@ -309,6 +312,7 @@ async function fetchRegions() {
         const res = await fetch('/api/regions');
         regions = await res.json();
         renderRegionChips();
+        renderCompareMainChips();
         renderCompareRegionChips();
         renderRegionSelect();
     } catch (err) {
@@ -322,6 +326,7 @@ async function fetchRegions() {
             {id:6,name:'전세계',color:'#73c991'}
         ];
         renderRegionChips();
+        renderCompareMainChips();
         renderCompareRegionChips();
         renderRegionSelect();
     }
@@ -349,17 +354,34 @@ function renderRegionChips() {
     wrap.innerHTML = html;
 }
 
+function renderCompareMainChips() {
+    const wrap = document.getElementById('compare-main-chips');
+    if (!wrap) return;
+    let html = '';
+    regions.forEach(r => {
+        const isSel = mainRegion === r.name;
+        html += `<button class="compare-chip ${isSel ? 'selected' : ''}"
+            style="${isSel ? `border-color:${r.color};color:${r.color};background:${r.color}22;` : ''}"
+            onclick="setMainRegion('${r.name}','${r.color}')">${r.name}</button>`;
+    });
+    wrap.innerHTML = html || '<span style="font-size:11px;color:var(--muted);">지역 없음</span>';
+}
+
 function renderCompareRegionChips() {
     const wrap = document.getElementById('compare-region-chips');
-    if (!mainRegion) { wrap.innerHTML = '<span style="font-size:11px;color:var(--muted);">먼저 메인 지역을 선택하세요</span>'; return; }
+    if (!wrap) return;
+    if (!mainRegion) {
+        wrap.innerHTML = '<span style="font-size:11px;color:var(--gold);">← 메인 지역을 먼저 선택하세요</span>';
+        return;
+    }
     let html = '';
     regions.filter(r => r.name !== mainRegion).forEach(r => {
         const sel = compareRegions.has(r.name);
-        html += `<button class="compare-chip ${sel?'selected':''}" 
-            style="${sel?`border-color:${r.color};color:${r.color};background:${r.color}22;`:''}"
+        html += `<button class="compare-chip ${sel ? 'selected' : ''}"
+            style="${sel ? `border-color:${r.color};color:${r.color};background:${r.color}22;` : ''}"
             onclick="toggleCompareRegion('${r.name}',this,'${r.color}')">${r.name}</button>`;
     });
-    wrap.innerHTML = html;
+    wrap.innerHTML = html || '<span style="font-size:11px;color:var(--muted);">비교할 다른 지역이 없습니다</span>';
 }
 
 function renderRegionSelect() {
@@ -373,32 +395,30 @@ function getRegionColor(name) {
     return r ? r.color : '#7BA3FF';
 }
 
+function setMainRegion(name, color) {
+    mainRegion = name;
+    compareRegions.delete(name); // 메인으로 선택된 지역은 비교 목록에서 제거
+    renderCompareMainChips();
+    renderCompareRegionChips();
+    render();
+}
+
 function setRegion(r, btn) {
     currentRegion = r;
     document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
     if (btn) btn.classList.add('active');
-    if (currentView === 'compare') {
-        mainRegion = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
-        compareRegions.clear();
-        renderCompareRegionChips();
-    }
+    // 비교 뷰에서는 필터바 지역 선택이 mainRegion에 영향을 주지 않음
     render();
 }
 
 function toggleCompareRegion(name, btn, color) {
     if (compareRegions.has(name)) {
         compareRegions.delete(name);
-        btn.classList.remove('selected');
-        btn.style.borderColor = '';
-        btn.style.color = '';
-        btn.style.background = '';
     } else {
         compareRegions.add(name);
-        btn.classList.add('selected');
-        btn.style.borderColor = color;
-        btn.style.color = color;
-        btn.style.background = color + '22';
     }
+    // 칩 전체 재렌더링 (상태 동기화)
+    renderCompareRegionChips();
     render();
 }
 
@@ -411,10 +431,11 @@ function setView(v) {
     const compareBar = document.getElementById('compare-bar');
     if (v === 'compare') {
         compareBar.classList.add('visible');
-        // 메인 지역 자동 설정: 현재 선택된 지역 or 첫번째 지역
-        if (!mainRegion) {
-            mainRegion = (currentRegion !== '전체') ? currentRegion : (regions.length > 0 ? regions[0].name : null);
+        // 메인 지역이 없으면 첫 번째 지역으로 자동 설정
+        if (!mainRegion && regions.length > 0) {
+            mainRegion = regions[0].name;
         }
+        renderCompareMainChips();
         renderCompareRegionChips();
     } else {
         compareBar.classList.remove('visible');
@@ -597,7 +618,7 @@ function renderCompare() {
     html += '</div>';
 
     if (compareRegions.size === 0) {
-        html += `<div style="text-align:center;padding:16px;font-size:12px;color:var(--muted);">위 비교 지역 선택 바에서 비교할 지역을 추가하세요</div>`;
+        html += `<div style="text-align:center;padding:16px;font-size:12px;color:var(--muted);">위 비교 바에서 <span style="color:var(--gold)">비교</span> 지역을 추가하세요</div>`;
     }
 
     return html;
