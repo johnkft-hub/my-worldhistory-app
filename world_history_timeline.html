@@ -83,16 +83,26 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .cmp-hint{margin-top:10px;padding:8px 12px;border-radius:6px;background:rgba(201,168,76,0.06);border:1px dashed var(--gold-dark);font-size:11px;color:var(--muted);text-align:center;display:none}
 .cmp-hint.show{display:block}
 
-.cmp-grid{display:grid;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px}
-.cmp-col{min-width:0;display:flex;flex-direction:column}
-.cmp-col-hd{padding:10px 12px;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.04em;border-bottom:2px solid;position:sticky;top:0;z-index:5}
-.cmp-col-bd{padding:8px;flex:1;min-height:180px}
-.cmp-sep{background:var(--border);flex-shrink:0}
-.cmp-ev{border-radius:5px;padding:7px 10px;margin-bottom:6px;cursor:pointer;border-left:3px solid;transition:filter 0.15s,transform 0.15s}
-.cmp-ev:hover{filter:brightness(1.2);transform:translateX(3px)}
-.cmp-ev-yr{font-size:9px;font-weight:700;letter-spacing:0.05em;margin-bottom:2px}
+/* ── 비교 뷰 테이블 (시대 행 기준 정렬 v4) ── */
+.cmp-table{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;width:100%}
+.cmp-thead{display:grid;position:sticky;top:0;z-index:10;background:var(--panel)}
+.cmp-th-era{background:var(--surface);border-bottom:2px solid var(--border);border-right:1px solid var(--border);padding:8px 10px;font-size:10px;color:var(--muted);font-weight:700;display:flex;align-items:center;justify-content:center}
+.cmp-th-col{border-bottom:2px solid;border-right:1px solid rgba(255,255,255,0.06);padding:10px 12px;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.04em}
+.cmp-th-col:last-child{border-right:none}
+.cmp-th-col-sub{font-size:9px;font-weight:400;opacity:.65;margin-top:2px}
+.cmp-era-row{display:grid;border-bottom:1px solid var(--border)}
+.cmp-era-row:last-child{border-bottom:none}
+.cmp-era-label-cell{background:rgba(201,168,76,0.05);border-right:1px solid var(--border);padding:6px 4px;display:flex;align-items:center;justify-content:center;min-width:32px}
+.cmp-era-badge{font-size:8px;color:var(--gold-dark);font-weight:700;letter-spacing:0.06em;writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap;transform:rotate(180deg)}
+.cmp-cell{padding:6px 7px;border-right:1px solid var(--border);min-height:56px;vertical-align:top}
+.cmp-cell:last-child{border-right:none}
+.cmp-cell.no-event{background:repeating-linear-gradient(-45deg,transparent,transparent 5px,rgba(255,255,255,0.013) 5px,rgba(255,255,255,0.013) 10px)}
+.cmp-ev{border-radius:5px;padding:6px 9px;margin-bottom:5px;cursor:pointer;border-left:3px solid;transition:filter 0.15s,transform 0.15s}
+.cmp-ev:last-child{margin-bottom:0}
+.cmp-ev:hover{filter:brightness(1.2);transform:translateX(2px)}
+.cmp-ev-yr{font-size:9px;font-weight:700;letter-spacing:0.04em;margin-bottom:2px}
 .cmp-ev-tt{font-size:11px;font-weight:500;line-height:1.35}
-.cmp-ev-ds{font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.cmp-ev-ds{font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
 .cmp-no-ev{padding:20px;text-align:center;font-size:11px;color:var(--muted);font-style:italic}
 
 .empty{text-align:center;padding:60px;color:var(--muted)}
@@ -484,21 +494,21 @@ function renderGrid(f){
 }
 
 // ════════════════════════════════════════════════
-// 비교 뷰 — v3 (콘텐츠 영역 내장, bar 완전 제거)
+// 비교 뷰 — v4 (시대 행 기준 시각적 정렬)
 // ════════════════════════════════════════════════
 function renderCompare(){
     if(!regions.length) return `<div class="empty"><div class="empty-icon">⏳</div><div class="empty-text">지역 로딩 중...</div></div>`;
 
     /* ① 메인 지역 칩 */
     const mainChips = regions.map(r=>{
-        const on = cmpMain===r.name;
-        const s  = on?`border-color:${r.color};color:${r.color};background:${r.color}28;`:'';
+        const on=cmpMain===r.name;
+        const s=on?`border-color:${r.color};color:${r.color};background:${r.color}28;`:'';
         return `<button class="cc ${on?'is-main':''}" style="${s}" onclick="setCmpMain('${r.name}')">${on?'⭐ ':''} ${r.name}</button>`;
     }).join('');
 
-    /* ② 비교 지역 칩 (메인 제외) */
-    const others = regions.filter(r=>r.name!==cmpMain);
-    const cmpChips = others.length
+    /* ② 비교 지역 칩 */
+    const others=regions.filter(r=>r.name!==cmpMain);
+    const cmpChips=others.length
         ? others.map(r=>{
             const on=cmpSet.has(r.name);
             const s=on?`border-color:${r.color};color:${r.color};background:${r.color}28;`:'';
@@ -506,62 +516,107 @@ function renderCompare(){
           }).join('')
         : '<span style="font-size:11px;color:var(--muted);">비교할 다른 지역 없음</span>';
 
-    /* ③ 힌트 (비교 지역 미선택 시) */
-    const hint = (cmpMain && cmpSet.size===0)
-        ? `<div class="cmp-hint show">📊 위에서 비교할 지역을 하나 이상 선택하면 나란히 비교됩니다</div>`
+    const hint=(cmpMain&&cmpSet.size===0)
+        ? `<div class="cmp-hint show">📊 위에서 비교할 지역을 하나 이상 선택하면 시대별로 나란히 비교됩니다</div>`
         : '';
 
-    /* ④ 컬럼 테이블 */
-    let table = '';
+    /* ③ 시대 행 기준 테이블 */
+    let table='';
     if(!cmpMain){
         table=`<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">메인 지역을 선택하세요</div></div>`;
     } else {
-        const cols = [cmpMain, ...cmpSet];
-        const colCnt = cols.length;
-        // 구분선 포함 grid-template-columns: 1fr 4px 1fr 4px ...
-        const tpl = cols.map(()=>'1fr').join(' 4px ');
+        const cols=[cmpMain,...cmpSet];
+        const colColors=cols.map(n=>getColor(n));
 
-        let colsHtml = '';
-        cols.forEach((name, ci)=>{
-            const color = getColor(name);
-            const isMain = ci===0;
-            const evList = events.filter(e=>e.region===name).sort((a,b)=>a.year-b.year);
-
-            let evHtml = '';
-            if(!evList.length){
-                evHtml=`<div class="cmp-no-ev">등록된 사건 없음</div>`;
-            } else {
-                evList.forEach(e=>{
-                    const d=esc(e.desc||e.description||'');
-                    const yr=e.year<0?`BC ${Math.abs(e.year)}`:`${e.year}`;
-                    evHtml+=`<div class="cmp-ev" onclick="showDetail(${e.id})"
-                        style="background:${color}18;border-left-color:${color};">
-                        <div class="cmp-ev-yr" style="color:${color};">${yr}년</div>
-                        <div class="cmp-ev-tt">${esc(e.title)}</div>
-                        ${d?`<div class="cmp-ev-ds">${d}</div>`:''}
-                    </div>`;
-                });
-            }
-
-            colsHtml += `<div class="cmp-col" style="background:${isMain?'rgba(201,168,76,0.04)':'var(--surface)'};">
-                <div class="cmp-col-hd" style="color:${color};background:${color}18;border-bottom-color:${color};">
-                    ${esc(name)}${isMain?' ⭐':''}
-                    <div style="font-size:9px;font-weight:400;opacity:.7;margin-top:1px;">${evList.length}개 사건</div>
-                </div>
-                <div class="cmp-col-bd">${evHtml}</div>
-            </div>`;
-
-            if(ci<colCnt-1){
-                colsHtml+=`<div class="cmp-sep"></div>`;
-            }
+        // 각 컬럼별 사건 목록 (연도순)
+        const colEvMap={};
+        cols.forEach(name=>{
+            colEvMap[name]=events.filter(e=>e.region===name).sort((a,b)=>a.year-b.year);
         });
 
-        table=`<div class="cmp-grid" style="grid-template-columns:${tpl};">${colsHtml}</div>`;
+        // 전체 사건으로 시대 구간 계산
+        const allEvs=[...cols.flatMap(n=>colEvMap[n])];
+        if(!allEvs.length){
+            table=`<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">선택된 지역에 사건이 없습니다</div></div>`;
+        } else {
+            // 시대 정의 (경계값, 레이블, 약칭)
+            const ERAS=[
+                {min:-Infinity, max:-500,  label:'고대',   sub:'~기원전 500년'},
+                {min:-500,      max:500,   label:'고전기', sub:'기원전 500년~서기 500년'},
+                {min:500,       max:1450,  label:'중세',   sub:'500~1450년'},
+                {min:1450,      max:1800,  label:'근세',   sub:'1450~1800년'},
+                {min:1800,      max:1950,  label:'근현대', sub:'1800~1950년'},
+                {min:1950,      max:Infinity, label:'현대',sub:'1950년 이후'},
+            ];
+
+            // 실제 사건이 있는 시대만 추출
+            const activeEras=ERAS.filter(era=>
+                allEvs.some(e=>e.year>=era.min && e.year<era.max)
+            );
+
+            // grid-template-columns: 시대레이블(32px) + 지역컬럼들(1fr)
+            const gridCols=`32px ${cols.map(()=>'1fr').join(' ')}`;
+
+            // 헤더행
+            let theadHtml=`<div class="cmp-thead" style="grid-template-columns:${gridCols};">
+                <div class="cmp-th-era">시대</div>`;
+            cols.forEach((name,ci)=>{
+                const color=colColors[ci];
+                const isMain=ci===0;
+                theadHtml+=`<div class="cmp-th-col"
+                    style="color:${color};background:${color}18;border-bottom-color:${color};">
+                    ${esc(name)}${isMain?' ⭐':''}
+                    <div class="cmp-th-col-sub">${colEvMap[name].length}개 사건</div>
+                </div>`;
+            });
+            theadHtml+='</div>';
+
+            // 시대별 행
+            let rowsHtml='';
+            activeEras.forEach((era,ei)=>{
+                rowsHtml+=`<div class="cmp-era-row" style="grid-template-columns:${gridCols};">`;
+
+                // 시대 레이블 셀 (세로 텍스트)
+                rowsHtml+=`<div class="cmp-era-label-cell">
+                    <span class="cmp-era-badge">${era.label}</span>
+                </div>`;
+
+                // 각 지역 셀
+                cols.forEach((name,ci)=>{
+                    const color=colColors[ci];
+                    const isMain=ci===0;
+                    const evsInEra=colEvMap[name].filter(e=>e.year>=era.min && e.year<era.max);
+                    const bg=isMain?'rgba(201,168,76,0.03)':'';
+
+                    if(!evsInEra.length){
+                        // 사건 없는 셀 — 사선 패턴
+                        rowsHtml+=`<div class="cmp-cell no-event" style="${bg?'background:'+bg:''};"></div>`;
+                    } else {
+                        let cellHtml='';
+                        evsInEra.forEach(e=>{
+                            const d=esc(e.desc||e.description||'');
+                            const yr=e.year<0?`BC ${Math.abs(e.year)}`:`${e.year}`;
+                            cellHtml+=`<div class="cmp-ev" onclick="showDetail(${e.id})"
+                                style="background:${color}18;border-left-color:${color};">
+                                <div class="cmp-ev-yr" style="color:${color};">${yr}년</div>
+                                <div class="cmp-ev-tt">${esc(e.title)}</div>
+                                ${d?`<div class="cmp-ev-ds">${d}</div>`:''}
+                            </div>`;
+                        });
+                        rowsHtml+=`<div class="cmp-cell" style="${bg?'background:'+bg:''}">${cellHtml}</div>`;
+                    }
+                });
+
+                rowsHtml+='</div>';
+            });
+
+            table=`<div class="cmp-table">${theadHtml}${rowsHtml}</div>`;
+        }
     }
 
     return `
     <div class="cmp-ctrl">
-        <div class="cmp-ctrl-title">⚖️ 지역 비교 타임라인</div>
+        <div class="cmp-ctrl-title">⚖️ 지역 비교 타임라인 — 시대별 정렬</div>
         <div class="cmp-row">
             <div class="cmp-row-label">🗺 메인 지역</div>
             <div class="cmp-chips">${mainChips}</div>
