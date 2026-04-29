@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>세계사 연대기 v2.0</title>
+<title>세계사 연대기 v2.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -130,6 +130,16 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
 .hidden{display:none!important}
+
+.footer{position:relative;z-index:5;background:rgba(10,5,20,0.98);border-top:1px solid var(--gold-dark);padding:18px 2rem;text-align:center}
+.footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.footer-logo{font-family:'Noto Serif KR',serif;font-size:13px;color:var(--gold-dark);letter-spacing:0.1em}
+.footer-divider{width:1px;height:14px;background:var(--border)}
+.footer-name{font-size:13px;color:var(--muted)}
+.footer-name span{color:var(--gold-light);font-weight:500}
+.footer-mail{font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.footer-mail:hover{color:var(--gold)}
+.footer-year{font-size:11px;color:var(--border)}
 </style>
 </head>
 <body>
@@ -141,7 +151,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
       <div class="logo-icon">🌍</div>
       <div>
         <div class="logo-text">세계사 연대기</div>
-        <div class="logo-sub">WORLD HISTORY CHRONICLE</div>
+        <div class="logo-sub">WORLD HISTORY CHRONICLE · v2.7</div>
       </div>
     </div>
     <div class="header-actions">
@@ -811,5 +821,17 @@ document.addEventListener('click', e => {
 
 init();
 </script>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">🌍 세계사 연대기</div>
+    <div class="footer-divider"></div>
+    <div class="footer-name">Made by <span>KR LEE</span></div>
+    <div class="footer-divider"></div>
+    <a class="footer-mail" href="mailto:johnkrrft@gmail.com">johnkrrft@gmail.com</a>
+    <div class="footer-divider"></div>
+    <div class="footer-year">© 2026 · v2.7</div>
+  </div>
+</footer>
 </body>
 </html>
