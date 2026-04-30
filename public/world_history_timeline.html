@@ -78,23 +78,41 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .compare-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-right:4px;white-space:nowrap}
 .compare-chip{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all 0.2s}
 .compare-chip.selected{font-weight:500}
-/* 시각적 비교 타임라인 */
-.compare-grid{display:grid;border:1px solid var(--border);border-radius:8px;overflow:visible}
-.compare-col-header{padding:8px 10px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid var(--border);letter-spacing:0.05em;position:sticky;top:var(--col-header-top,0px);z-index:20}
-.compare-era-row{display:contents}
-.compare-era-label{background:rgba(201,168,76,0.06);border-top:1px solid var(--gold-dark);border-bottom:1px solid var(--border);padding:5px 10px;font-family:'Noto Serif KR',serif;font-size:10px;color:var(--gold-dark);letter-spacing:0.15em;display:flex;align-items:center;justify-content:center;text-align:center;writing-mode:horizontal-tb}
-.compare-era-cell{border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid var(--border);padding:8px;min-height:60px;vertical-align:top}
-.compare-event{border-radius:4px;padding:5px 8px;margin-bottom:5px;cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
-.compare-event:hover{opacity:0.85}
-.compare-event-year{font-size:9px;font-weight:600;letter-spacing:0.05em}
-.compare-event-title{font-size:11px;font-weight:500;margin-top:1px;line-height:1.3}
-.compare-empty-cell{padding:12px 8px;text-align:center;font-size:10px;color:rgba(138,143,170,0.3);letter-spacing:0.05em}
-/* 기존 호환 */
-.compare-wrap{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.compare-col{min-width:0}
-.compare-col-body{padding:8px;min-height:200px}
-.compare-divider{width:1px;background:var(--border)}
-.compare-spacer{height:8px}
+/* ── 연도비례 시각적 비교 타임라인 ── */
+.vt-wrap{position:relative;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+/* 헤더 행 (지역명): 세로 스크롤 시 상단 고정 */
+.vt-header-row{display:flex;position:sticky;top:0;z-index:30;background:var(--panel);border-bottom:1px solid var(--border)}
+.vt-header-axis{width:60px;flex-shrink:0;border-right:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;height:36px}
+.vt-header-axis-label{font-size:9px;color:var(--gold-dark);letter-spacing:0.1em}
+.vt-header-cols{display:flex;flex:1;overflow:hidden}
+.vt-header-col{flex:1;height:36px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:0.04em;border-left:1px solid var(--border);border-bottom:2px solid}
+.vt-header-col:first-child{border-left:none}
+/* 스크롤 본문 */
+.vt-scroll-body{display:flex;overflow-y:auto;overflow-x:hidden;max-height:70vh}
+/* 연도 축: 가로 스크롤 없이 좌측 고정 */
+.vt-axis{width:60px;flex-shrink:0;position:sticky;left:0;z-index:20;background:rgba(13,13,26,0.97);border-right:1px solid rgba(201,168,76,0.25)}
+.vt-axis-body{position:relative}
+.vt-tick{position:absolute;right:0;left:0;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:5px;padding-top:1px}
+.vt-tick-line{position:absolute;right:0;width:6px;height:1px;background:rgba(201,168,76,0.4);top:5px}
+.vt-tick-label{font-size:8px;color:var(--gold-dark);white-space:nowrap;line-height:1}
+.vt-cols{display:flex;flex:1;min-width:0;position:relative}
+.vt-col{flex:1;min-width:0;position:relative;border-left:1px solid var(--border)}
+.vt-col:first-child{border-left:none}
+.vt-col-body{position:relative}
+.vt-col-bg-stripe{position:absolute;left:0;right:0;pointer-events:none}
+.vt-event{position:absolute;left:4px;right:4px;cursor:pointer;transition:all 0.15s;border-radius:4px;padding:3px 6px;border-left:3px solid transparent;min-height:24px}
+.vt-event:hover{filter:brightness(1.3);z-index:10!important;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+.vt-event-year{font-size:8px;font-weight:700;letter-spacing:0.04em;line-height:1.2}
+.vt-event-title{font-size:10px;font-weight:500;line-height:1.3;margin-top:1px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vt-era-line{position:absolute;left:0;right:0;height:1px;background:rgba(201,168,76,0.2);pointer-events:none;z-index:1}
+.vt-axis-era-line{position:absolute;left:0;right:0;height:1px;background:rgba(201,168,76,0.35);pointer-events:none}
+/* 지역칩 수정/삭제 그룹 */
+.chip-group{display:inline-flex;align-items:center;gap:0;}
+.chip-group .chip{border-radius:20px 0 0 20px;border-right:none;}
+.chip-action{padding:4px 7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all 0.2s;line-height:1;}
+.chip-action:hover{background:rgba(201,168,76,0.12);color:var(--gold);border-color:var(--gold);}
+.chip-action-del{border-radius:0 20px 20px 0;border-left:none;}
+.chip-action-del:hover{background:rgba(255,107,107,0.12);color:#FF6B6B;border-color:#FF6B6B;}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;position:relative}
@@ -269,7 +287,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
   <div class="modal" style="max-width:400px;">
     <button class="modal-close" onclick="closeModal('add-region-modal')">✕</button>
     <div class="modal-header">
-      <div class="modal-year" style="font-size:20px;">지역 추가</div>
+      <div class="modal-year" style="font-size:20px;" id="region-modal-title">지역 추가</div>
     </div>
     <div class="modal-body">
       <div class="form-section">
@@ -361,7 +379,12 @@ function renderRegionChips() {
     const wrap = document.getElementById('region-chips');
     let html = `<button class="chip ${currentRegion==='전체'?'active':''}" onclick="setRegion('전체',this)">전체</button>`;
     regions.forEach(r => {
-        html += `<button class="chip ${currentRegion===r.name?'active':''}" onclick="setRegion('${r.name}',this)">${r.name}</button>`;
+        const isActive = currentRegion === r.name;
+        html += `<span class="chip-group">
+            <button class="chip ${isActive?'active':''}" onclick="setRegion('${r.name}',this)">${r.name}</button>
+            <button class="chip-action" onclick="openAddRegionModal(${r.id})" title="수정">✏️</button>
+            <button class="chip-action chip-action-del" onclick="deleteRegion(${r.id})" title="삭제">✕</button>
+        </span>`;
     });
     wrap.innerHTML = html;
 }
@@ -395,9 +418,12 @@ function setRegion(r, btn) {
     document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
     if (btn) btn.classList.add('active');
     if (currentView === 'compare') {
-        mainRegion = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
-        compareRegions.clear();
-        renderCompareRegionChips();
+        const newMain = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
+        if (newMain !== mainRegion) {
+            mainRegion = newMain;
+            compareRegions.clear();
+            renderCompareRegionChips();
+        }
     }
     render();
 }
@@ -432,25 +458,11 @@ function setView(v) {
         compareRegions.clear();
         renderCompareRegionChips();
         compareBar.classList.add('visible');
-        // 컬럼 헤더 sticky top 값 동적 계산
-        requestAnimationFrame(updateColHeaderTop);
+        renderCompareRegionChips();
     } else {
         compareBar.classList.remove('visible');
     }
     render();
-}
-
-function updateColHeaderTop() {
-    const header = document.querySelector('.header');
-    const filterbar = document.querySelector('.filterbar');
-    const comparebar = document.querySelector('.compare-bar');
-    const statsEl = document.querySelector('.stats');
-    let top = 0;
-    if (header) top += header.offsetHeight;
-    if (filterbar) top += filterbar.offsetHeight;
-    if (comparebar && comparebar.classList.contains('visible')) top += comparebar.offsetHeight;
-    if (statsEl) top += statsEl.offsetHeight + 20; // stats + margin
-    document.documentElement.style.setProperty('--col-header-top', top + 'px');
 }
 
 // ── 필터 ──────────────────────────────────────
@@ -498,10 +510,7 @@ function render() {
     const content = document.getElementById('content');
     if (currentView === 'timeline') content.innerHTML = renderTimeline(filtered);
     else if (currentView === 'grid') content.innerHTML = renderGrid(filtered);
-    else {
-        content.innerHTML = renderCompare();
-        requestAnimationFrame(updateColHeaderTop);
-    }
+    else content.innerHTML = renderCompare();
 }
 
 function renderStats(filtered) {
@@ -583,7 +592,7 @@ function renderGrid(filtered) {
     return html;
 }
 
-// ── 비교 타임라인 렌더링 ──────────────────────
+// ── 연도 비례 시각적 비교 타임라인 ──────────────
 function getEraName(year) {
     if (year < -500)  return '고대  ~BC 500';
     if (year < 500)   return 'BC 500 ~ AD 500';
@@ -597,16 +606,17 @@ function getEraName(year) {
     return '2000년 이후';
 }
 
+// 시대 경계 연도 목록
+const ERA_BOUNDARIES = [-500, 500, 1000, 1450, 1700, 1800, 1900, 1950, 2000];
+
 function renderCompare() {
     if (!mainRegion) {
         return `<div class="empty"><div class="empty-icon">🗺️</div><div class="empty-text">위 필터바에서 메인으로 볼 지역을 선택하세요</div></div>`;
     }
 
     const allCols = [mainRegion, ...compareRegions];
-    const colCount = allCols.length;
     const colColors = allCols.map(name => getRegionColor(name));
 
-    // 각 컬럼별 이벤트 (연도순 정렬)
     const colEvents = allCols.map(name =>
         events.filter(e => {
             const desc = e.desc || e.description || '';
@@ -620,75 +630,142 @@ function renderCompare() {
         return `<div class="empty"><div class="empty-icon">🏛️</div><div class="empty-text">${mainRegion} 지역의 사건이 없습니다.</div></div>`;
     }
 
-    // ── 전체 사건에서 시대(era) 목록 추출 ──
-    const eraOrder = [
-        '고대  ~BC 500','BC 500 ~ AD 500','500 ~ 1000년',
-        '1000 ~ 1450년','1450 ~ 1700년','1700 ~ 1800년',
-        '1800 ~ 1900년','1900 ~ 1950년','1950 ~ 2000년','2000년 이후'
-    ];
-    const usedEras = new Set();
-    colEvents.flat().forEach(e => usedEras.add(getEraName(e.year)));
-    const eras = eraOrder.filter(er => usedEras.has(er));
+    const allEventsFlat = colEvents.flat();
+    const allYears = allEventsFlat.map(e => e.year);
+    const minYear = Math.min(...allYears);
+    const maxYear = Math.max(...allYears);
+    const yearRange = maxYear - minYear || 1;
 
-    // ── era별로 각 컬럼 사건 그룹화 ──
-    const eraGroups = eras.map(era =>
-        colEvents.map(evList => evList.filter(e => getEraName(e.year) === era))
-    );
+    // 픽셀당 연도 비율: 전체 높이를 연도 범위에 비례하게 설정
+    // 최소 600px, 연도 범위 100년당 80px
+    const PX_PER_YEAR = Math.max(0.4, Math.min(2.0, 600 / yearRange));
+    const TOTAL_HEIGHT = Math.max(600, Math.round(yearRange * PX_PER_YEAR));
+    const CARD_HEIGHT = 52; // 카드 예상 높이(px) - 겹침 방지용
+    const PAD_TOP = 8;
 
-    // ── grid-template-columns: [시대축 60px] [컬럼들 1fr씩, 구분선 1px] ──
-    const colTemplate = allCols.map(() => '1fr').join(' 1px ');
-    const gridTemplate = `60px ${colTemplate}`;
+    // 연도 → 픽셀 변환
+    function yearToPx(y) {
+        return Math.round(PAD_TOP + ((y - minYear) / yearRange) * (TOTAL_HEIGHT - PAD_TOP * 2));
+    }
 
-    let html = `<div class="compare-grid" style="grid-template-columns:${gridTemplate};">`;
+    // 겹침 방지: 같은 컬럼에서 카드가 겹치면 아래로 밀기
+    function resolveOverlaps(events) {
+        const placed = []; // {year, px, id}
+        return events.map(e => {
+            let px = yearToPx(e.year);
+            // 이미 배치된 카드 중 겹치는 것 확인
+            for (const p of placed) {
+                if (Math.abs(px - p.px) < CARD_HEIGHT) {
+                    px = p.px + CARD_HEIGHT;
+                }
+            }
+            placed.push({year: e.year, px, id: e.id});
+            return {event: e, px};
+        });
+    }
 
-    // ── 헤더 행 ──
-    // 시대축 헤더
-    html += `<div style="background:var(--panel);border-bottom:2px solid var(--gold-dark);padding:8px 4px;display:flex;align-items:center;justify-content:center;">
-        <span style="font-size:9px;color:var(--gold-dark);letter-spacing:0.1em;">연대</span>
-    </div>`;
-    // 각 컬럼 헤더
+    // 눈금 연도 계산
+    function getTicks() {
+        const step = yearRange <= 200 ? 25 : yearRange <= 500 ? 50 : yearRange <= 2000 ? 200 : yearRange <= 5000 ? 500 : 2000;
+        const start = Math.ceil(minYear / step) * step;
+        const ticks = [];
+        for (let y = start; y <= maxYear; y += step) ticks.push(y);
+        return ticks;
+    }
+
+    const ticks = getTicks();
+
+    // 시대 경계선 (표시 범위 내 것만)
+    const eraLines = ERA_BOUNDARIES.filter(y => y > minYear && y < maxYear);
+
+    // ── HTML 생성 ──
+    // ┌──────────────────────────────────────────┐
+    // │ .vt-wrap                                  │
+    // │  ├ .vt-header-row  [sticky top]           │
+    // │  │   ├ .vt-header-axis  (연대)            │
+    // │  │   └ .vt-header-cols  (지역명들)        │
+    // │  └ .vt-scroll-body  [overflow-y scroll]   │
+    // │      ├ .vt-axis  [sticky left] (눈금)     │
+    // │      └ .vt-cols  (사건 카드들)            │
+    // └──────────────────────────────────────────┘
+
+    let html = `<div class="vt-wrap">`;
+
+    // ── 헤더 행 (sticky top) ──
+    html += `<div class="vt-header-row">
+        <div class="vt-header-axis"><span class="vt-header-axis-label">연대</span></div>
+        <div class="vt-header-cols">`;
     allCols.forEach((name, ci) => {
         const color = colColors[ci];
         const isMain = ci === 0;
-        if (ci > 0) html += `<div style="width:1px;background:var(--border);border-bottom:2px solid var(--gold-dark);"></div>`;
-        html += `<div class="compare-col-header" style="color:${color};background:${color}18;border-bottom:2px solid ${color}66;">
+        html += `<div class="vt-header-col" style="color:${color};border-bottom-color:${color};background:${color}10;">
             ${name}${isMain ? ' ★' : ''}
         </div>`;
     });
+    html += `</div></div>`; // vt-header-cols, vt-header-row
 
-    // ── era별 데이터 행 ──
-    eras.forEach((era, ei) => {
-        const rowBg = ei % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'rgba(0,0,0,0.1)';
+    // ── 스크롤 본문 ──
+    html += `<div class="vt-scroll-body">`;
 
-        // 시대 라벨 셀
-        html += `<div style="background:rgba(201,168,76,0.07);border-top:1px solid rgba(201,168,76,0.25);border-bottom:1px solid var(--border);border-right:1px solid rgba(201,168,76,0.2);padding:6px 4px;display:flex;align-items:flex-start;justify-content:center;">
-            <span style="font-size:9px;color:var(--gold);font-weight:600;letter-spacing:0.05em;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);white-space:nowrap;">${era}</span>
+    // 연도 축 (sticky left)
+    html += `<div class="vt-axis"><div class="vt-axis-body" style="height:${TOTAL_HEIGHT}px;">`;
+    ticks.forEach(y => {
+        const px = yearToPx(y);
+        const label = y < 0 ? `BC${Math.abs(y)}` : `${y}`;
+        html += `<div class="vt-tick" style="top:${px}px;">
+            <div class="vt-tick-line"></div>
+            <span class="vt-tick-label">${label}</span>
         </div>`;
+    });
+    eraLines.forEach(y => {
+        const px = yearToPx(y);
+        html += `<div class="vt-axis-era-line" style="top:${px}px;"></div>`;
+    });
+    html += `</div></div>`; // vt-axis-body, vt-axis
 
-        // 각 컬럼 셀
-        eraGroups[ei].forEach((cellEvents, ci) => {
-            const color = colColors[ci];
-            if (ci > 0) html += `<div style="width:1px;background:var(--border);border-top:1px solid var(--border);"></div>`;
-            html += `<div class="compare-era-cell" style="background:${rowBg};">`;
-            if (cellEvents.length === 0) {
-                html += `<div class="compare-empty-cell">—</div>`;
-            } else {
-                cellEvents.forEach(e => {
-                    const desc = escHtml(e.desc || e.description || '');
-                    const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
-                    html += `<div class="compare-event" onclick="showDetail(${e.id})"
-                        style="background:${color}18;border-left:3px solid ${color};">
-                        <div class="compare-event-year" style="color:${color};">${yrLabel}년</div>
-                        <div class="compare-event-title">${escHtml(e.title)}</div>
-                        ${desc ? `<div style="font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${desc}</div>` : ''}
-                    </div>`;
-                });
-            }
-            html += `</div>`;
+    // 컬럼들
+    html += `<div class="vt-cols">`;
+    allCols.forEach((name, ci) => {
+        const color = colColors[ci];
+        const placed = resolveOverlaps(colEvents[ci]);
+        const actualHeight = placed.length > 0
+            ? Math.max(TOTAL_HEIGHT, placed[placed.length-1].px + CARD_HEIGHT + PAD_TOP)
+            : TOTAL_HEIGHT;
+
+        html += `<div class="vt-col">
+            <div class="vt-col-body" style="height:${actualHeight}px;">`;
+
+        // 시대 경계선
+        eraLines.forEach(y => {
+            html += `<div class="vt-era-line" style="top:${yearToPx(y)}px;"></div>`;
         });
+
+        // 짝수/홀수 시대 배경 띠
+        const allBounds = [minYear, ...eraLines, maxYear];
+        for (let i = 0; i < allBounds.length - 1; i++) {
+            const topPx = yearToPx(allBounds[i]);
+            const botPx = yearToPx(allBounds[i+1]);
+            if (i % 2 === 1) {
+                html += `<div class="vt-col-bg-stripe" style="top:${topPx}px;height:${botPx-topPx}px;background:rgba(255,255,255,0.015);"></div>`;
+            }
+        }
+
+        // 사건 카드
+        placed.forEach(({event: e, px}) => {
+            const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
+            html += `<div class="vt-event" onclick="showDetail(${e.id})"
+                style="top:${px}px;background:${color}18;border-left-color:${color};z-index:2;">
+                <div class="vt-event-year" style="color:${color};">${yrLabel}년</div>
+                <div class="vt-event-title">${escHtml(e.title)}</div>
+            </div>`;
+        });
+
+        html += `</div></div>`; // vt-col-body, vt-col
     });
 
-    html += '</div>';
+    html += `</div>`; // vt-cols
+    html += `</div>`; // vt-scroll-body
+    html += `</div>`; // vt-wrap
 
     if (compareRegions.size === 0) {
         html += `<div style="text-align:center;padding:12px;font-size:12px;color:var(--muted);">위 비교 지역 선택 바에서 비교할 지역을 추가하세요</div>`;
@@ -696,7 +773,6 @@ function renderCompare() {
 
     return html;
 }
-
 // ── 상세 / 삭제 / 수정 ────────────────────────
 function showDetail(id) {
     const e = events.find(x => x.id == id);
@@ -767,12 +843,22 @@ async function saveEvent() {
     } catch (err) { alert('서버 전송 오류가 발생했습니다.'); }
 }
 
-// ── 지역 추가 모달 ─────────────────────────────
+// ── 지역 추가/수정/삭제 ─────────────────────────
 let selectedColor = '#7BA3FF';
+let editingRegionId = null;
 
-function openAddRegionModal() {
-    document.getElementById('r-name').value = '';
-    selectedColor = '#7BA3FF';
+function openAddRegionModal(regionId) {
+    editingRegionId = regionId || null;
+    if (regionId) {
+        const r = regions.find(x => x.id == regionId);
+        document.getElementById('region-modal-title').textContent = '지역 수정';
+        document.getElementById('r-name').value = r.name;
+        selectedColor = r.color || '#7BA3FF';
+    } else {
+        document.getElementById('region-modal-title').textContent = '지역 추가';
+        document.getElementById('r-name').value = '';
+        selectedColor = '#7BA3FF';
+    }
     document.querySelectorAll('#color-picker span').forEach(s => {
         s.style.border = s.dataset.color === selectedColor ? '2px solid white' : '2px solid transparent';
     });
@@ -790,18 +876,39 @@ async function saveRegion() {
     const name = document.getElementById('r-name').value.trim();
     if (!name) { alert('지역명을 입력하세요.'); return; }
     try {
-        const res = await fetch('/api/regions', {
-            method: 'POST',
+        const url = editingRegionId ? `/api/regions/${editingRegionId}` : '/api/regions';
+        const method = editingRegionId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+            method,
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ name, color: selectedColor })
         });
         if (res.ok) {
             closeModal('add-region-modal');
             await fetchRegions();
-            alert(`'${name}' 지역이 추가됐습니다!`);
+            render();
         } else {
             const d = await res.json();
-            alert('추가 실패: ' + (d.error || '오류'));
+            alert((editingRegionId ? '수정' : '추가') + ' 실패: ' + (d.error || '오류'));
+        }
+    } catch (err) { alert('서버 오류가 발생했습니다.'); }
+}
+
+async function deleteRegion(id) {
+    const r = regions.find(x => x.id == id);
+    if (!r) return;
+    if (!confirm(`'${r.name}' 지역을 삭제하시겠습니까?\n해당 지역의 사건들은 지역 정보 없이 유지됩니다.`)) return;
+    try {
+        const res = await fetch(`/api/regions/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            if (currentRegion === r.name) currentRegion = '전체';
+            if (mainRegion === r.name) { mainRegion = null; compareRegions.clear(); }
+            compareRegions.delete(r.name);
+            await fetchRegions();
+            render();
+        } else {
+            const d = await res.json();
+            alert('삭제 실패: ' + (d.error || '오류'));
         }
     } catch (err) { alert('서버 오류가 발생했습니다.'); }
 }

@@ -100,8 +100,8 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 .vt-col:first-child{border-left:none}
 .vt-col-body{position:relative}
 .vt-col-bg-stripe{position:absolute;left:0;right:0;pointer-events:none}
-.vt-event{position:absolute;left:4px;right:4px;cursor:pointer;transition:all 0.15s;border-radius:4px;padding:3px 6px;border-left:3px solid transparent;min-height:24px}
-.vt-event:hover{filter:brightness(1.3);z-index:10!important;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+.vt-event{position:absolute;left:4px;right:4px;cursor:pointer;transition:all 0.15s;border-radius:4px;padding:3px 6px;border-left:3px solid transparent;min-height:20px;max-height:46px;overflow:hidden}
+.vt-event:hover{filter:brightness(1.3);z-index:10!important;box-shadow:0 2px 8px rgba(0,0,0,0.4);max-height:none;overflow:visible}
 .vt-event-year{font-size:8px;font-weight:700;letter-spacing:0.04em;line-height:1.2}
 .vt-event-title{font-size:10px;font-weight:500;line-height:1.3;margin-top:1px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .vt-era-line{position:absolute;left:0;right:0;height:1px;background:rgba(201,168,76,0.2);pointer-events:none;z-index:1}
@@ -637,10 +637,8 @@ function renderCompare() {
     const yearRange = maxYear - minYear || 1;
 
     // 픽셀당 연도 비율: 전체 높이를 연도 범위에 비례하게 설정
-    // 최소 600px, 연도 범위 100년당 80px
     const PX_PER_YEAR = Math.max(0.4, Math.min(2.0, 600 / yearRange));
     const TOTAL_HEIGHT = Math.max(600, Math.round(yearRange * PX_PER_YEAR));
-    const CARD_HEIGHT = 52; // 카드 예상 높이(px) - 겹침 방지용
     const PAD_TOP = 8;
 
     // 연도 → 픽셀 변환
@@ -648,20 +646,26 @@ function renderCompare() {
         return Math.round(PAD_TOP + ((y - minYear) / yearRange) * (TOTAL_HEIGHT - PAD_TOP * 2));
     }
 
-    // 겹침 방지: 같은 컬럼에서 카드가 겹치면 아래로 밀기
-    function resolveOverlaps(events) {
-        const placed = []; // {year, px, id}
-        return events.map(e => {
-            let px = yearToPx(e.year);
-            // 이미 배치된 카드 중 겹치는 것 확인
-            for (const p of placed) {
-                if (Math.abs(px - p.px) < CARD_HEIGHT) {
-                    px = p.px + CARD_HEIGHT;
-                }
+    // 카드 최소 표시 높이(px) — 실제 DOM 카드 크기
+    const CARD_RENDER_H = 48;
+    // 비례 배치 기준 최소 간격: 카드 높이와 연도 비례값 중 작은 것
+    // → 사건이 가까울수록 연도비례를 최대한 유지, 정말 겹칠 때만 밀기
+    const MIN_GAP_PX = Math.min(CARD_RENDER_H, Math.max(8, PX_PER_YEAR * 5)); // 5년치 or 카드높이 중 작은 값
+
+    // 겹침 방지: 연도 비례 위치를 최대한 유지하면서 최소 간격만 보장
+    function resolveOverlaps(evList) {
+        if (evList.length === 0) return [];
+        // 1패스: 연도 비례 위치 계산
+        const items = evList.map(e => ({ event: e, idealPx: yearToPx(e.year), px: yearToPx(e.year) }));
+        // 2패스: 앞 카드와 겹치면 최소 간격만큼만 밀기 (연도 비례 최대 보존)
+        for (let i = 1; i < items.length; i++) {
+            const prev = items[i - 1];
+            const cur  = items[i];
+            if (cur.px - prev.px < MIN_GAP_PX) {
+                cur.px = prev.px + MIN_GAP_PX;
             }
-            placed.push({year: e.year, px, id: e.id});
-            return {event: e, px};
-        });
+        }
+        return items;
     }
 
     // 눈금 연도 계산
@@ -729,7 +733,7 @@ function renderCompare() {
         const color = colColors[ci];
         const placed = resolveOverlaps(colEvents[ci]);
         const actualHeight = placed.length > 0
-            ? Math.max(TOTAL_HEIGHT, placed[placed.length-1].px + CARD_HEIGHT + PAD_TOP)
+            ? Math.max(TOTAL_HEIGHT, placed[placed.length-1].px + CARD_RENDER_H + PAD_TOP)
             : TOTAL_HEIGHT;
 
         html += `<div class="vt-col">
