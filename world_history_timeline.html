@@ -124,7 +124,7 @@ body{background:var(--deep);color:var(--text);font-family:'Noto Sans KR',sans-se
 ::-webkit-scrollbar-thumb:hover{background:var(--gold-dark)}
 .chip-group{display:inline-flex;align-items:center;gap:0;}
 .chip-group .chip{border-radius:20px 0 0 20px;border-right:none;}
-.chip-group .chip.active{border-right:none;}
+.chip-group .chip.active + .chip-action{border-color:var(--gold);}
 .chip-action{padding:4px 7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all 0.2s;line-height:1;}
 .chip-action:hover{background:rgba(201,168,76,0.12);color:var(--gold);border-color:var(--gold);}
 .chip-action-del{border-radius:0 20px 20px 0;border-left:none;}
@@ -387,12 +387,17 @@ function getRegionColor(name) {
 
 function setRegion(r, btn) {
     currentRegion = r;
+    // chip-group 내부 .chip 포함 전체 active 초기화
     document.querySelectorAll('#region-chips .chip').forEach(c => c.classList.remove('active'));
     if (btn) btn.classList.add('active');
     if (currentView === 'compare') {
-        mainRegion = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
-        compareRegions.clear();
-        renderCompareRegionChips();
+        const newMain = (r !== '전체') ? r : (regions.length > 0 ? regions[0].name : null);
+        if (newMain !== mainRegion) {
+            // 메인 지역이 바뀔 때만 비교 선택 초기화
+            mainRegion = newMain;
+            compareRegions.clear();
+            renderCompareRegionChips();
+        }
     }
     render();
 }
