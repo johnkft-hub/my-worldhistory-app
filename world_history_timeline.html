@@ -636,21 +636,34 @@ function renderCompare() {
     const maxYear = Math.max(...allYears);
     const yearRange = maxYear - minYear || 1;
 
-    // 픽셀당 연도 비율: 전체 높이를 연도 범위에 비례하게 설정
-    // 최소 600px, 연도 범위 100년당 80px
-    const PX_PER_YEAR = Math.max(0.4, Math.min(2.0, 600 / yearRange));
-    const TOTAL_HEIGHT = Math.max(600, Math.round(yearRange * PX_PER_YEAR));
-    const CARD_HEIGHT = 52; // 카드 예상 높이(px) - 겹침 방지용
+    const CARD_HEIGHT = 52;
     const PAD_TOP = 8;
+    const ERA_SECTION_HEIGHT = 260; // 각 시대 구간마다 동일하게 할당할 픽셀 높이
 
-    // 연도 → 픽셀 변환
+    // 활성 시대 경계: 데이터 범위 내 ERA_BOUNDARIES + 양 끝(minYear, maxYear)
+    const activeBounds = [
+        minYear,
+        ...ERA_BOUNDARIES.filter(y => y > minYear && y < maxYear),
+        maxYear
+    ];
+    const numSections = activeBounds.length - 1;
+    const TOTAL_HEIGHT = PAD_TOP * 2 + numSections * ERA_SECTION_HEIGHT;
+
+    // 시대 정규화 yearToPx: 각 시대 구간이 동일 높이(ERA_SECTION_HEIGHT)를 가짐
+    // 고대(수천년)도 현대(수십년)도 동일한 화면 비중 → 하단 압축 현상 해소
     function yearToPx(y) {
-        return Math.round(PAD_TOP + ((y - minYear) / yearRange) * (TOTAL_HEIGHT - PAD_TOP * 2));
+        let si = numSections - 1;
+        for (let i = 0; i < numSections; i++) {
+            if (y <= activeBounds[i + 1]) { si = i; break; }
+        }
+        const span = activeBounds[si + 1] - activeBounds[si];
+        const t = span > 0 ? (y - activeBounds[si]) / span : 0;
+        return Math.round(PAD_TOP + si * ERA_SECTION_HEIGHT + t * ERA_SECTION_HEIGHT);
     }
 
     // 레인 배정: 수직 위치는 yearToPx로 고정, 겹치는 카드는 별도 레인(수평 분할)에 배치
     function assignLanes(evts) {
-        const lanes = []; // lanes[i] = 이미 배치된 px 배열
+        const lanes = [];
         const result = evts.map(e => {
             const px = yearToPx(e.year);
             let lane = 0;
@@ -667,13 +680,17 @@ function renderCompare() {
         return {placed: result, laneCount: Math.max(1, lanes.length)};
     }
 
-    // 눈금 연도 계산
+    // 눈금: 각 시대 경계 + 구간 내 균등 중간 눈금
     function getTicks() {
-        const step = yearRange <= 200 ? 25 : yearRange <= 500 ? 50 : yearRange <= 2000 ? 200 : yearRange <= 5000 ? 500 : 2000;
-        const start = Math.ceil(minYear / step) * step;
-        const ticks = [];
-        for (let y = start; y <= maxYear; y += step) ticks.push(y);
-        return ticks;
+        const ticks = new Set();
+        for (let i = 0; i < numSections; i++) {
+            const s = activeBounds[i], e = activeBounds[i + 1], span = e - s;
+            ticks.add(s);
+            const step = span <= 100 ? 25 : span <= 500 ? 100 : span <= 2000 ? 500 : 1000;
+            for (let y = Math.ceil(s / step) * step; y < e; y += step) ticks.add(y);
+        }
+        ticks.add(activeBounds[numSections]);
+        return [...ticks].sort((a, b) => a - b);
     }
 
     const ticks = getTicks();
