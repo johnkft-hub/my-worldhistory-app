@@ -634,11 +634,9 @@ function renderCompare() {
     const allYears = allEventsFlat.map(e => e.year);
     const minYear = Math.min(...allYears);
     const maxYear = Math.max(...allYears);
-    const yearRange = maxYear - minYear || 1;
-
     const CARD_HEIGHT = 52;
     const PAD_TOP = 8;
-    const ERA_SECTION_HEIGHT = 260; // 각 시대 구간마다 동일하게 할당할 픽셀 높이
+    const MIN_SECTION_HEIGHT = 80; // 이벤트 없는 구간도 최소 이 높이 확보
 
     // 활성 시대 경계: 데이터 범위 내 ERA_BOUNDARIES + 양 끝(minYear, maxYear)
     const activeBounds = [
@@ -647,10 +645,28 @@ function renderCompare() {
         maxYear
     ];
     const numSections = activeBounds.length - 1;
-    const TOTAL_HEIGHT = PAD_TOP * 2 + numSections * ERA_SECTION_HEIGHT;
 
-    // 시대 정규화 yearToPx: 각 시대 구간이 동일 높이(ERA_SECTION_HEIGHT)를 가짐
-    // 고대(수천년)도 현대(수십년)도 동일한 화면 비중 → 하단 압축 현상 해소
+    // 구간별 최대 이벤트 수 (모든 컬럼 중) → 이벤트 밀도에 따라 높이 결정
+    const sectionMaxEvents = new Array(numSections).fill(0);
+    for (let si = 0; si < numSections; si++) {
+        const s = activeBounds[si], e = activeBounds[si + 1];
+        for (const colEvts of colEvents) {
+            const cnt = colEvts.filter(ev =>
+                si < numSections - 1 ? (ev.year >= s && ev.year < e) : (ev.year >= s && ev.year <= e)
+            ).length;
+            sectionMaxEvents[si] = Math.max(sectionMaxEvents[si], cnt);
+        }
+    }
+
+    // 구간별 동적 높이: 이벤트 수 × CARD_HEIGHT, 최소 MIN_SECTION_HEIGHT
+    const sectionHeights = sectionMaxEvents.map(n => Math.max(MIN_SECTION_HEIGHT, n * CARD_HEIGHT));
+
+    // 구간 시작 픽셀 누적
+    const sectionStartPx = [PAD_TOP];
+    for (let i = 0; i < numSections; i++) sectionStartPx.push(sectionStartPx[i] + sectionHeights[i]);
+    const TOTAL_HEIGHT = sectionStartPx[numSections] + PAD_TOP;
+
+    // yearToPx: 구간별 동적 높이를 반영한 piecewise linear 변환
     function yearToPx(y) {
         let si = numSections - 1;
         for (let i = 0; i < numSections; i++) {
@@ -658,7 +674,7 @@ function renderCompare() {
         }
         const span = activeBounds[si + 1] - activeBounds[si];
         const t = span > 0 ? (y - activeBounds[si]) / span : 0;
-        return Math.round(PAD_TOP + si * ERA_SECTION_HEIGHT + t * ERA_SECTION_HEIGHT);
+        return Math.round(sectionStartPx[si] + t * sectionHeights[si]);
     }
 
     // 레인 배정: 수직 위치는 yearToPx로 고정, 겹치는 카드는 별도 레인(수평 분할)에 배치
