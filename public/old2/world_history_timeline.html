@@ -648,15 +648,19 @@ function renderCompare() {
         return Math.round(PAD_TOP + ((y - minYear) / yearRange) * (TOTAL_HEIGHT - PAD_TOP * 2));
     }
 
-    // 겹침 처리: 수직 위치는 연도 비례로 고정, 겹치는 카드는 수평 인덴트로 구분
-    function resolveOverlaps(evts) {
-        const placed = [];
-        return evts.map(e => {
-            const px = yearToPx(e.year);
-            // 동일 위치에 배치된 카드 수 계산 → 수평 인덴트 결정
-            const overlapCount = placed.filter(p => Math.abs(px - p.px) < CARD_HEIGHT).length;
-            placed.push({px});
-            return {event: e, px, indent: overlapCount};
+    // 겹침 방지: 같은 컬럼에서 카드가 겹치면 아래로 밀기
+    function resolveOverlaps(events) {
+        const placed = []; // {year, px, id}
+        return events.map(e => {
+            let px = yearToPx(e.year);
+            // 이미 배치된 카드 중 겹치는 것 확인
+            for (const p of placed) {
+                if (Math.abs(px - p.px) < CARD_HEIGHT) {
+                    px = p.px + CARD_HEIGHT;
+                }
+            }
+            placed.push({year: e.year, px, id: e.id});
+            return {event: e, px};
         });
     }
 
@@ -724,9 +728,12 @@ function renderCompare() {
     allCols.forEach((name, ci) => {
         const color = colColors[ci];
         const placed = resolveOverlaps(colEvents[ci]);
+        const actualHeight = placed.length > 0
+            ? Math.max(TOTAL_HEIGHT, placed[placed.length-1].px + CARD_HEIGHT + PAD_TOP)
+            : TOTAL_HEIGHT;
 
         html += `<div class="vt-col">
-            <div class="vt-col-body" style="height:${TOTAL_HEIGHT}px;">`;
+            <div class="vt-col-body" style="height:${actualHeight}px;">`;
 
         // 시대 경계선
         eraLines.forEach(y => {
@@ -743,12 +750,11 @@ function renderCompare() {
             }
         }
 
-        // 사건 카드 (수직 위치는 연도 비례 고정, 겹칠 경우 수평 인덴트로 구분)
-        placed.forEach(({event: e, px, indent}) => {
+        // 사건 카드
+        placed.forEach(({event: e, px}) => {
             const yrLabel = e.year < 0 ? `BC ${Math.abs(e.year)}` : `${e.year}`;
-            const leftPx = 4 + indent * 10;
             html += `<div class="vt-event" onclick="showDetail(${e.id})"
-                style="top:${px}px;left:${leftPx}px;right:4px;background:${color}18;border-left-color:${color};z-index:${2 + indent};">
+                style="top:${px}px;background:${color}18;border-left-color:${color};z-index:2;">
                 <div class="vt-event-year" style="color:${color};">${yrLabel}년</div>
                 <div class="vt-event-title">${escHtml(e.title)}</div>
             </div>`;
