@@ -88,6 +88,23 @@ app.post('/api/regions', async (req, res) => {
     }
 });
 
+// 지역 수정
+app.put('/api/regions/:id', async (req, res) => {
+    const { name, color } = req.body;
+    if (!name) return res.status(400).json({ error: '지역명은 필수입니다.' });
+    try {
+        const result = await pool.query(
+            'UPDATE regions SET name=$1, color=$2 WHERE id=$3 RETURNING *',
+            [name.trim(), color || '#7BA3FF', req.params.id]
+        );
+        if (result.rowCount === 0) return res.status(404).json({ error: '지역을 찾을 수 없습니다.' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        if (err.code === '23505') return res.status(400).json({ error: '이미 존재하는 지역명입니다.' });
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // 지역 삭제
 app.delete('/api/regions/:id', async (req, res) => {
     try {
@@ -104,8 +121,7 @@ app.get('/api/events', async (req, res) => {
         const result = await pool.query('SELECT * FROM events ORDER BY year ASC');
         const mapped = result.rows.map(row => ({
             id: row.id, year: row.year, title: row.title,
-            region: row.region, desc: row.description, importance: row.importance,
-            created_at: row.created_at
+            region: row.region, desc: row.description, importance: row.importance
         }));
         res.json(mapped);
     } catch (err) {
